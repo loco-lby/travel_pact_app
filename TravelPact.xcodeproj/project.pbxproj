@@ -1,0 +1,521 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0AD166D886F8E0BDAB026406 /* LocationSettingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6D402AE586F7DFD2D0FD99 /* LocationSettingScreen.swift */; };
+		116BC5A8BD81A3796B0481E8 /* PhotoAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA5251739D9D558A7FAA6D6 /* PhotoAnalysisView.swift */; };
+		184A8BBC23D164E531529888 /* WaypointEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265821E9E20CC514F5D75A66 /* WaypointEditView.swift */; };
+		1DF4DCD0C5BC92EA8106272C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 554D1937559BA8E2CE8B6469 /* Supabase */; };
+		25422955C1EB20EAB1887EEA /* LocationUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61577663CD7C1BEDCD0912F /* LocationUpdateView.swift */; };
+		36F18C6AE84F6FB03B4A6BDE /* ConnectionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6AD12BA3FD1DD336F6918D /* ConnectionsManager.swift */; };
+		3ADE299B97E48B5E7350042A /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632167C4CC4369F56B95C4B /* MainTabView.swift */; };
+		4EB6BD08E469B2ABD93375BE /* LocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3695034BD4F7235017C12D89 /* LocationSearchView.swift */; };
+		5DDBC8C6E2EC3069B3A5DA80 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4403AC5418D925A6E07A7FFD /* AppConfig.swift */; };
+		6A090A6928B54BBE72020097 /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C1E0ADD24B8B584DBA3F7D /* WelcomeScreen.swift */; };
+		78144FF8159931082854B060 /* AddConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EC2F5DB934124684ECA7DF /* AddConnectionView.swift */; };
+		8CBE391A9D298B69DA3C38ED /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CBA18540583B9CC40358E2 /* PreviewData.swift */; };
+		9DDCE3FC7C30C099C25C10D2 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719D4066A94014285C933A2 /* OnboardingCoordinator.swift */; };
+		BBABC8395298A9341AC1482D /* ProfileCreationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9450A87673F26A549F5B9CE /* ProfileCreationScreen.swift */; };
+		BCDA85094E654102179BA0CE /* PhotoAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045DA641712B1ADC8337818A /* PhotoAnalysisService.swift */; };
+		BE058A64F04CC14A8099AECB /* GlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39362A7B61321E44BDB46685 /* GlobeView.swift */; };
+		C51F2E48D2A8041EB0A9BBF5 /* RoutePathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C3E7F10C986BA3897D0BB /* RoutePathView.swift */; };
+		C5361B014702E20302A63BF6 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11A75C430269FC3B4874AA /* SupabaseClient.swift */; };
+		DEC7D398F6A2B1B1FC4E111D /* LocationPrivacyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197862B0C691FEFD20FEC774 /* LocationPrivacyManager.swift */; };
+		E12E8777AF869B76B8C506C6 /* SkillsGiftsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524D91E3788C8D18CB88A092 /* SkillsGiftsScreen.swift */; };
+		E396E44CD82D5420D27E04E0 /* LiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D763F4B1DB24DA8B195348AA /* LiquidGlass.swift */; };
+		E57C6098030870537F154848 /* PhoneAuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EBF78697EC393C14179DE1 /* PhoneAuthScreen.swift */; };
+		E5F03F987B4C3CD6BA4F7532 /* TravelPactApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789FF84B7928E67823E6D35 /* TravelPactApp.swift */; };
+		EF4005793A55AA28F181D240 /* WaypointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87488726AF9B74C231233939 /* WaypointsManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		045DA641712B1ADC8337818A /* PhotoAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalysisService.swift; sourceTree = "<group>"; };
+		197862B0C691FEFD20FEC774 /* LocationPrivacyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPrivacyManager.swift; sourceTree = "<group>"; };
+		20EBF78697EC393C14179DE1 /* PhoneAuthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAuthScreen.swift; sourceTree = "<group>"; };
+		265821E9E20CC514F5D75A66 /* WaypointEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointEditView.swift; sourceTree = "<group>"; };
+		3695034BD4F7235017C12D89 /* LocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchView.swift; sourceTree = "<group>"; };
+		39362A7B61321E44BDB46685 /* GlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeView.swift; sourceTree = "<group>"; };
+		4403AC5418D925A6E07A7FFD /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		524D91E3788C8D18CB88A092 /* SkillsGiftsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsGiftsScreen.swift; sourceTree = "<group>"; };
+		7BA5251739D9D558A7FAA6D6 /* PhotoAnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalysisView.swift; sourceTree = "<group>"; };
+		8632167C4CC4369F56B95C4B /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		87488726AF9B74C231233939 /* WaypointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointsManager.swift; sourceTree = "<group>"; };
+		9D6D402AE586F7DFD2D0FD99 /* LocationSettingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingScreen.swift; sourceTree = "<group>"; };
+		9E6AD12BA3FD1DD336F6918D /* ConnectionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsManager.swift; sourceTree = "<group>"; };
+		A61577663CD7C1BEDCD0912F /* LocationUpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUpdateView.swift; sourceTree = "<group>"; };
+		A789FF84B7928E67823E6D35 /* TravelPactApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelPactApp.swift; sourceTree = "<group>"; };
+		AD11A75C430269FC3B4874AA /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
+		BC5C3E7F10C986BA3897D0BB /* RoutePathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePathView.swift; sourceTree = "<group>"; };
+		C4CBA18540583B9CC40358E2 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
+		D3C1E0ADD24B8B584DBA3F7D /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
+		D763F4B1DB24DA8B195348AA /* LiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlass.swift; sourceTree = "<group>"; };
+		F4EC2F5DB934124684ECA7DF /* AddConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddConnectionView.swift; sourceTree = "<group>"; };
+		F719D4066A94014285C933A2 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
+		F9450A87673F26A549F5B9CE /* ProfileCreationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationScreen.swift; sourceTree = "<group>"; };
+		FC197B6B653429CE829DE9C5 /* TravelPact.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TravelPact.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9BC494A3CCE1EAB130F8D750 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1DF4DCD0C5BC92EA8106272C /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0052CA68E2D6C10DBC8E329E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9E6AD12BA3FD1DD336F6918D /* ConnectionsManager.swift */,
+				197862B0C691FEFD20FEC774 /* LocationPrivacyManager.swift */,
+				045DA641712B1ADC8337818A /* PhotoAnalysisService.swift */,
+				AD11A75C430269FC3B4874AA /* SupabaseClient.swift */,
+				87488726AF9B74C231233939 /* WaypointsManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		05473797D24B87480DB0E364 = {
+			isa = PBXGroup;
+			children = (
+				7051A0A2420F12FC724CC773 /* TravelPact */,
+				6FB3688429E8691040D44079 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		146DED8411FCCE855901E3B0 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				9D6D402AE586F7DFD2D0FD99 /* LocationSettingScreen.swift */,
+				F719D4066A94014285C933A2 /* OnboardingCoordinator.swift */,
+				20EBF78697EC393C14179DE1 /* PhoneAuthScreen.swift */,
+				7BA5251739D9D558A7FAA6D6 /* PhotoAnalysisView.swift */,
+				F9450A87673F26A549F5B9CE /* ProfileCreationScreen.swift */,
+				524D91E3788C8D18CB88A092 /* SkillsGiftsScreen.swift */,
+				D3C1E0ADD24B8B584DBA3F7D /* WelcomeScreen.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		3EA2A2ADC9A5AF5867FDFEC3 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		6FB3688429E8691040D44079 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FC197B6B653429CE829DE9C5 /* TravelPact.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7051A0A2420F12FC724CC773 /* TravelPact */ = {
+			isa = PBXGroup;
+			children = (
+				B5779A87CD7BF27C9E8E5C8B /* Config */,
+				FFD7B7038BF30A25619A69D1 /* Design */,
+				146DED8411FCCE855901E3B0 /* Onboarding */,
+				8880BE6FA7AE8C248ED4646B /* Preview Content */,
+				0052CA68E2D6C10DBC8E329E /* Services */,
+				8D217BF8944BD29BBD36B48D /* Views */,
+				8632167C4CC4369F56B95C4B /* MainTabView.swift */,
+				A789FF84B7928E67823E6D35 /* TravelPactApp.swift */,
+			);
+			path = TravelPact;
+			sourceTree = "<group>";
+		};
+		8880BE6FA7AE8C248ED4646B /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				C4CBA18540583B9CC40358E2 /* PreviewData.swift */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8D217BF8944BD29BBD36B48D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3EA2A2ADC9A5AF5867FDFEC3 /* Onboarding */,
+				F4EC2F5DB934124684ECA7DF /* AddConnectionView.swift */,
+				39362A7B61321E44BDB46685 /* GlobeView.swift */,
+				3695034BD4F7235017C12D89 /* LocationSearchView.swift */,
+				A61577663CD7C1BEDCD0912F /* LocationUpdateView.swift */,
+				BC5C3E7F10C986BA3897D0BB /* RoutePathView.swift */,
+				265821E9E20CC514F5D75A66 /* WaypointEditView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B5779A87CD7BF27C9E8E5C8B /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				4403AC5418D925A6E07A7FFD /* AppConfig.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		FFD7B7038BF30A25619A69D1 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				D763F4B1DB24DA8B195348AA /* LiquidGlass.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E647946B46867ECB52BA469F /* TravelPact */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9D88438F9D00A1764F0BEEDF /* Build configuration list for PBXNativeTarget "TravelPact" */;
+			buildPhases = (
+				6001365D463CFDDD3F20F7B1 /* Load Environment Variables */,
+				7E3DD47A92A4E2E1B2EEEA9E /* Sources */,
+				9BC494A3CCE1EAB130F8D750 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TravelPact;
+			packageProductDependencies = (
+				554D1937559BA8E2CE8B6469 /* Supabase */,
+			);
+			productName = TravelPact;
+			productReference = FC197B6B653429CE829DE9C5 /* TravelPact.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9229AF24FA9E6418E67D2744 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					E647946B46867ECB52BA469F = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E421A528F18B61D5E3E0F77D /* Build configuration list for PBXProject "TravelPact" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 05473797D24B87480DB0E364;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				27BA2C7546D40737631DFFBE /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E647946B46867ECB52BA469F /* TravelPact */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6001365D463CFDDD3F20F7B1 /* Load Environment Variables */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PROJECT_DIR}/.env.local",
+			);
+			name = "Load Environment Variables";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copy environment variables to Info.plist\nif [ -f \"${PROJECT_DIR}/.env.local\" ]; then\n  while IFS='=' read -r key value; do\n    /usr/libexec/PlistBuddy -c \"Set :$key $value\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || \\\n    /usr/libexec/PlistBuddy -c \"Add :$key string $value\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n  done < \"${PROJECT_DIR}/.env.local\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7E3DD47A92A4E2E1B2EEEA9E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78144FF8159931082854B060 /* AddConnectionView.swift in Sources */,
+				5DDBC8C6E2EC3069B3A5DA80 /* AppConfig.swift in Sources */,
+				36F18C6AE84F6FB03B4A6BDE /* ConnectionsManager.swift in Sources */,
+				BE058A64F04CC14A8099AECB /* GlobeView.swift in Sources */,
+				E396E44CD82D5420D27E04E0 /* LiquidGlass.swift in Sources */,
+				DEC7D398F6A2B1B1FC4E111D /* LocationPrivacyManager.swift in Sources */,
+				4EB6BD08E469B2ABD93375BE /* LocationSearchView.swift in Sources */,
+				0AD166D886F8E0BDAB026406 /* LocationSettingScreen.swift in Sources */,
+				25422955C1EB20EAB1887EEA /* LocationUpdateView.swift in Sources */,
+				3ADE299B97E48B5E7350042A /* MainTabView.swift in Sources */,
+				9DDCE3FC7C30C099C25C10D2 /* OnboardingCoordinator.swift in Sources */,
+				E57C6098030870537F154848 /* PhoneAuthScreen.swift in Sources */,
+				BCDA85094E654102179BA0CE /* PhotoAnalysisService.swift in Sources */,
+				116BC5A8BD81A3796B0481E8 /* PhotoAnalysisView.swift in Sources */,
+				8CBE391A9D298B69DA3C38ED /* PreviewData.swift in Sources */,
+				BBABC8395298A9341AC1482D /* ProfileCreationScreen.swift in Sources */,
+				C51F2E48D2A8041EB0A9BBF5 /* RoutePathView.swift in Sources */,
+				E12E8777AF869B76B8C506C6 /* SkillsGiftsScreen.swift in Sources */,
+				C5361B014702E20302A63BF6 /* SupabaseClient.swift in Sources */,
+				E5F03F987B4C3CD6BA4F7532 /* TravelPactApp.swift in Sources */,
+				184A8BBC23D164E531529888 /* WaypointEditView.swift in Sources */,
+				EF4005793A55AA28F181D240 /* WaypointsManager.swift in Sources */,
+				6A090A6928B54BBE72020097 /* WelcomeScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		31895FE872ADC64D3E8DF892 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "TravelPact needs access to your camera to take profile photos";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "TravelPact needs your location to connect you with nearby travelers";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "TravelPact needs access to your photo library to select profile photos";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.travelpact.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		5B3A07E05CA300FA0708FCFF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = TravelPact/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.travelpact.app;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		6161405B2EC57FD2B88F1E2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = TravelPact/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.travelpact.app;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		EC539DF05AFCCB0ACFB28F72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "TravelPact needs access to your camera to take profile photos";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "TravelPact needs your location to connect you with nearby travelers";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "TravelPact needs access to your photo library to select profile photos";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.travelpact.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9D88438F9D00A1764F0BEEDF /* Build configuration list for PBXNativeTarget "TravelPact" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6161405B2EC57FD2B88F1E2A /* Debug */,
+				5B3A07E05CA300FA0708FCFF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E421A528F18B61D5E3E0F77D /* Build configuration list for PBXProject "TravelPact" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC539DF05AFCCB0ACFB28F72 /* Debug */,
+				31895FE872ADC64D3E8DF892 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		27BA2C7546D40737631DFFBE /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		554D1937559BA8E2CE8B6469 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27BA2C7546D40737631DFFBE /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 9229AF24FA9E6418E67D2744 /* Project object */;
+}
