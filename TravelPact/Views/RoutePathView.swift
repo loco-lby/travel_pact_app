@@ -15,7 +15,7 @@ func createRoutePaths(waypoints: [Waypoint], animation: Double) -> some MapConte
                     LinearGradient(
                         colors: [
                             Color.blue.opacity(0.7),
-                            Color.purple.opacity(0.7)
+                            Color.cyan.opacity(0.7)
                         ],
                         startPoint: .leading,
                         endPoint: .trailing

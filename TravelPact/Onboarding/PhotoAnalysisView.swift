@@ -2,20 +2,30 @@ import SwiftUI
 import Photos
 
 struct PhotoAnalysisView: View {
-    @StateObject private var photoService = PhotoAnalysisService()
     @EnvironmentObject var onboardingViewModel: OnboardingViewModel
+    @ObservedObject var analysisManager = BackgroundPhotoAnalysisManager.shared
     @State private var showPermissionAlert = false
-    @State private var skipConfirmation = false
     @State private var granularityLevel = "city"
-    @State private var isSyncing = false
+    @State private var hasStartedAnalysis = false
     
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            // Background gradient
+            LinearGradient(
+                colors: [
+                    Color(red: 0.05, green: 0.05, blue: 0.15),
+                    Color(red: 0.02, green: 0.02, blue: 0.08)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
-            VStack(spacing: 30) {
+            VStack(spacing: 40) {
+                Spacer()
+                
                 // Header
-                VStack(spacing: 16) {
+                VStack(spacing: 20) {
                     Image(systemName: "photo.stack")
                         .font(.system(size: 60))
                         .foregroundStyle(
@@ -26,142 +36,129 @@ struct PhotoAnalysisView: View {
                             )
                         )
                     
-                    Text("Build Your Travel Timeline")
+                    Text("Analyze Your Travel History")
                         .font(.system(size: 28, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                     
-                    Text("We'll analyze your photos to create waypoints from your past travels")
+                    Text("We'll scan your photo library in the background to automatically create waypoints from your past travels")
                         .font(.system(size: 16))
                         .foregroundColor(.white.opacity(0.8))
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 30)
                 }
                 
-                if photoService.isAnalyzing {
-                    // Progress View
-                    VStack(spacing: 24) {
-                        ProgressView(value: Double(photoService.progress?.current ?? 0),
-                                   total: Double(photoService.progress?.total ?? 100))
-                            .progressViewStyle(LinearProgressViewStyle(tint: .white))
-                            .scaleEffect(x: 1, y: 2, anchor: .center)
+                // Granularity selector (only shown if not started)
+                if !hasStartedAnalysis && !analysisManager.isAnalyzing {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Location Detail Level")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.white.opacity(0.9))
+                        
+                        VStack(spacing: 10) {
+                            HStack(spacing: 10) {
+                                ForEach(["precise", "area_code"], id: \.self) { level in
+                                    Button(action: {
+                                        granularityLevel = level
+                                    }) {
+                                        Text(level == "area_code" ? "Area Code" : level.capitalized)
+                                            .font(.system(size: 14, weight: .medium))
+                                            .foregroundColor(granularityLevel == level ? .black : .white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 12)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(granularityLevel == level ? Color.white : Color.white.opacity(0.2))
+                                            )
+                                    }
+                                }
+                            }
+                            
+                            HStack(spacing: 10) {
+                                ForEach(["city", "country"], id: \.self) { level in
+                                    Button(action: {
+                                        granularityLevel = level
+                                    }) {
+                                        Text(level.capitalized)
+                                            .font(.system(size: 14, weight: .medium))
+                                            .foregroundColor(granularityLevel == level ? .black : .white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 12)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(granularityLevel == level ? Color.white : Color.white.opacity(0.2))
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Text(granularityDescription)
+                            .font(.system(size: 12))
+                            .foregroundColor(.white.opacity(0.6))
+                            .padding(.top, 4)
+                    }
+                    .padding(.horizontal, 40)
+                }
+                
+                // Status indicator
+                if hasStartedAnalysis || analysisManager.isAnalyzing {
+                    VStack(spacing: 16) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.green)
+                            Text("Analysis started in background")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.white)
+                        }
+                        
+                        Text("You can continue using the app while we analyze your photos")
+                            .font(.system(size: 14))
+                            .foregroundColor(.white.opacity(0.7))
+                            .multilineTextAlignment(.center)
                             .padding(.horizontal, 40)
                         
-                        VStack(spacing: 8) {
-                            if let progress = photoService.progress {
-                                Text(progress.message)
-                                    .font(.system(size: 16, weight: .medium))
-                                    .foregroundColor(.white)
-                                
-                                if let location = progress.currentLocation {
-                                    Text("Current: \(location)")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.7))
+                        if let progress = analysisManager.progress {
+                            HStack(spacing: 20) {
+                                VStack {
+                                    Text("\(progress.current)")
+                                        .font(.system(size: 20, weight: .bold))
+                                        .foregroundColor(.blue)
+                                    Text("Processed")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(.white.opacity(0.6))
                                 }
                                 
-                                Text("\(progress.current) of \(progress.total)")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white.opacity(0.6))
+                                VStack {
+                                    Text("\(progress.waypointsFound)")
+                                        .font(.system(size: 20, weight: .bold))
+                                        .foregroundColor(.green)
+                                    Text("Locations")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(.white.opacity(0.6))
+                                }
                             }
-                        }
-                        
-                        Button(action: {
-                            photoService.cancelAnalysis()
-                        }) {
-                            Text("Cancel")
-                                .font(.system(size: 16, weight: .medium))
-                                .foregroundColor(.white.opacity(0.8))
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 8)
-                                .background(Color.white.opacity(0.2))
-                                .cornerRadius(20)
+                            .padding()
+                            .background(Color.white.opacity(0.1))
+                            .cornerRadius(12)
                         }
                     }
-                } else if !photoService.waypoints.isEmpty {
-                    // Results View
-                    VStack(spacing: 20) {
-                        VStack(spacing: 12) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 50))
-                                .foregroundColor(.green)
-                            
-                            Text("Analysis Complete!")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.white)
-                            
-                            VStack(spacing: 4) {
-                                Text("Found \(photoService.waypoints.count) locations")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                let totalPhotos = photoService.waypoints.reduce(0) { $0 + $1.photoCount }
-                                Text("\(totalPhotos) photos organized")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white.opacity(0.7))
-                                
-                                if photoService.excludedPhotosCount > 0 {
-                                    Text("\(photoService.excludedPhotosCount) photos without location excluded")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(.orange.opacity(0.8))
-                                }
-                            }
-                        }
-                        
-                        // Waypoint Preview
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(photoService.waypoints.prefix(5), id: \.id) { waypoint in
-                                    VStack(spacing: 4) {
-                                        Text(waypoint.locationName.components(separatedBy: " (").first ?? "")
-                                            .font(.system(size: 14, weight: .medium))
-                                            .lineLimit(1)
-                                        Text("\(waypoint.photoCount) photos")
-                                            .font(.system(size: 12))
-                                            .opacity(0.7)
-                                    }
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(Color.white.opacity(0.15))
-                                    .cornerRadius(12)
-                                }
-                                
-                                if photoService.waypoints.count > 5 {
-                                    Text("+\(photoService.waypoints.count - 5) more")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.7))
-                                        .padding(.horizontal, 16)
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                        
+                    .transition(.scale.combined(with: .opacity))
+                }
+                
+                Spacer()
+                
+                // Action buttons
+                VStack(spacing: 16) {
+                    if !hasStartedAnalysis && !analysisManager.isAnalyzing {
                         Button(action: {
                             Task {
-                                await MainActor.run {
-                                    isSyncing = true
-                                }
-                                
-                                do {
-                                    try await syncAndComplete()
-                                } catch {
-                                    print("❌ Error syncing and completing: \(error)")
-                                    // Still complete onboarding even if sync fails
-                                    await MainActor.run {
-                                        isSyncing = false
-                                        completeOnboarding()
-                                    }
-                                }
+                                await startAnalysis()
                             }
                         }) {
                             HStack {
-                                if isSyncing {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: .black))
-                                        .scaleEffect(0.8)
-                                } else {
-                                    Image(systemName: "arrow.right.circle.fill")
-                                    Text("Save & Continue")
-                                }
+                                Image(systemName: "wand.and.stars")
+                                Text("Start Background Analysis")
                             }
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.black)
@@ -170,87 +167,19 @@ struct PhotoAnalysisView: View {
                             .background(Color.white)
                             .cornerRadius(16)
                         }
-                        .disabled(isSyncing)
                         .padding(.horizontal, 40)
-                        
-                        // Skip button if syncing or if user wants to skip
-                        Button(action: {
-                            completeOnboarding()
-                        }) {
-                            Text(isSyncing ? "Skip sync" : "Continue without saving")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.white.opacity(0.7))
-                        }
                     }
-                } else {
-                    // Initial Setup View
-                    VStack(spacing: 24) {
-                        // Granularity Selector
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Location Detail Level")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.white.opacity(0.9))
-                            
-                            HStack(spacing: 12) {
-                                ForEach(["city", "region", "country"], id: \.self) { level in
-                                    Button(action: {
-                                        granularityLevel = level
-                                    }) {
-                                        Text(level.capitalized)
-                                            .font(.system(size: 14, weight: .medium))
-                                            .foregroundColor(granularityLevel == level ? .black : .white)
-                                            .padding(.horizontal, 20)
-                                            .padding(.vertical, 10)
-                                            .background(
-                                                granularityLevel == level ? Color.white : Color.white.opacity(0.2)
-                                            )
-                                            .cornerRadius(12)
-                                    }
-                                }
-                            }
-                            
-                            Text(granularityDescription)
-                                .font(.system(size: 12))
-                                .foregroundColor(.white.opacity(0.6))
-                                .padding(.top, 4)
-                        }
-                        .padding(.horizontal, 40)
-                        
-                        Spacer()
-                        
-                        VStack(spacing: 16) {
-                            Button(action: {
-                                Task {
-                                    await startAnalysis()
-                                }
-                            }) {
-                                HStack {
-                                    Image(systemName: "wand.and.stars")
-                                    Text("Analyze Photo Library")
-                                }
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(.black)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(Color.white)
-                                .cornerRadius(16)
-                            }
-                            
-                            Button(action: {
-                                skipConfirmation = true
-                            }) {
-                                Text("Skip for now")
-                                    .font(.system(size: 16, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.7))
-                            }
-                        }
-                        .padding(.horizontal, 40)
+                    
+                    Button(action: {
+                        completeOnboarding()
+                    }) {
+                        Text(hasStartedAnalysis || analysisManager.isAnalyzing ? "Continue" : "Skip for now")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white.opacity(0.7))
                     }
                 }
-                
-                Spacer()
+                .padding(.bottom, 40)
             }
-            .padding(.top, 60)
         }
         .alert("Photo Access Required", isPresented: $showPermissionAlert) {
             Button("Open Settings") {
@@ -262,31 +191,16 @@ struct PhotoAnalysisView: View {
         } message: {
             Text("Please grant photo library access in Settings to analyze your travel photos.")
         }
-        .alert("Skip Photo Analysis?", isPresented: $skipConfirmation) {
-            Button("Skip", role: .destructive) {
-                completeOnboarding()
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("You can always analyze your photos later from the settings menu.")
-        }
-        .alert("Error", isPresented: .constant(photoService.errorMessage != nil)) {
-            Button("OK") {
-                photoService.errorMessage = nil
-            }
-        } message: {
-            if let error = photoService.errorMessage {
-                Text(error)
-            }
-        }
     }
     
     private var granularityDescription: String {
         switch granularityLevel {
+        case "precise":
+            return "Groups photos by exact location"
+        case "area_code":
+            return "Groups photos by postal/ZIP code area"
         case "city":
             return "Groups photos by city (e.g., Paris, Tokyo)"
-        case "region":
-            return "Groups photos by state/region (e.g., California, Bavaria)"
         case "country":
             return "Groups photos by country (e.g., France, Japan)"
         default:
@@ -313,29 +227,18 @@ struct PhotoAnalysisView: View {
             return
         }
         
-        // Start analysis
-        do {
-            try await photoService.analyzePhotoLibrary(granularity: granularityLevel)
-        } catch {
-            print("Analysis error: \(error)")
-        }
-    }
-    
-    private func syncAndComplete() async throws {
-        try await photoService.syncToDatabase()
+        // Start background analysis
         await MainActor.run {
-            completeOnboarding()
+            withAnimation {
+                hasStartedAnalysis = true
+            }
+            analysisManager.startBackgroundAnalysis(granularity: granularityLevel)
         }
+        
+        // Don't auto-navigate - let user click Continue button when ready
     }
     
     private func completeOnboarding() {
         onboardingViewModel.completeOnboarding()
-    }
-}
-
-struct PhotoAnalysisView_Previews: PreviewProvider {
-    static var previews: some View {
-        PhotoAnalysisView()
-            .environmentObject(OnboardingViewModel())
     }
 }

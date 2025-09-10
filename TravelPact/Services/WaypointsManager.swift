@@ -15,7 +15,7 @@ struct Waypoint: Identifiable, Codable, Equatable {
     let arrivalTime: Date?  // Changed from arrivalDate to arrivalTime
     let departureTime: Date?  // Changed from departureDate to departureTime
     let city: String?
-    let region: String?
+    let areaCode: String?  // Postal/ZIP code for precise location control
     let country: String?
     let notes: String?
     let createdAt: Date
@@ -50,7 +50,7 @@ struct Waypoint: Identifiable, Codable, Equatable {
         case arrivalTime = "arrival_time"  // Changed from arrival_date
         case departureTime = "departure_time"  // Changed from departure_date
         case city
-        case region
+        case areaCode = "area_code"
         case country
         case notes
         case createdAt = "created_at"
@@ -208,7 +208,7 @@ class WaypointsManager: ObservableObject {
                         arrivalTime: wp.arrivalTime,
                         departureTime: wp.departureTime,
                         city: wp.city,
-                        region: wp.region,
+                        areaCode: wp.areaCode,
                         country: wp.country,
                         notes: wp.notes,
                         createdAt: wp.createdAt,
@@ -227,13 +227,18 @@ class WaypointsManager: ObservableObject {
     func splitRouteAtWaypoint(_ waypoint: Waypoint) async throws {
         let session = try await SupabaseManager.shared.auth.session
         
-        // Check if there are waypoints after this one in the same route
+        // Get waypoints before and after the split point
+        let waypointsBefore = waypoints.filter { 
+            $0.routeId == waypoint.routeId && $0.sequenceOrder < waypoint.sequenceOrder 
+        }
+        
         let waypointsAfter = waypoints.filter { 
             $0.routeId == waypoint.routeId && $0.sequenceOrder > waypoint.sequenceOrder 
         }
         
-        // Only split if there are waypoints after this one
-        if !waypointsAfter.isEmpty {
+        // Only split if there are waypoints both before AND after this one
+        // This creates two distinct routes
+        if !waypointsBefore.isEmpty && !waypointsAfter.isEmpty {
             // Create a new route for waypoints after the split point
             struct RouteInsert: Codable {
                 let user_id: String
@@ -245,10 +250,13 @@ class WaypointsManager: ObservableObject {
                 let updated_at: String
             }
             
+            // Get the original route name for better naming
+            let originalRouteName = "Route"
+            
             let newRoute = RouteInsert(
                 user_id: session.user.id.uuidString,
-                name: "Split Route - After \(waypoint.name)",
-                description: "Route split from original at \(waypoint.name)",
+                name: "\(originalRouteName) - Part 2",
+                description: "Second part of route split at \(waypoint.name)",
                 status: "completed",
                 privacy_level: "private",
                 created_at: ISO8601DateFormatter().string(from: Date()),
@@ -289,10 +297,19 @@ class WaypointsManager: ObservableObject {
                     .execute()
             }
             
-            print("✅ Split route at waypoint: \(waypoint.name), moved \(waypointsAfter.count) waypoints to new route")
+            print("✅ Split route at waypoint: \(waypoint.name)")
+            print("   - Original route now has \(waypointsBefore.count) waypoints")
+            print("   - New route has \(waypointsAfter.count) waypoints")
+        } else if waypointsAfter.isEmpty {
+            // If no waypoints after, just delete the last waypoint
+            print("⚠️ No waypoints after \(waypoint.name), just deleting it")
+        } else if waypointsBefore.isEmpty {
+            // If no waypoints before, just delete the first waypoint
+            print("⚠️ No waypoints before \(waypoint.name), just deleting it")
         }
         
         // Delete the waypoint at the split point
+        // This separates the two routes completely
         try await deleteWaypoint(waypoint)
     }
     
@@ -323,6 +340,147 @@ class WaypointsManager: ObservableObject {
                 print("❌ Error reordering waypoint: \(error)")
             }
         }
+    }
+    
+    func createWaypoint(name: String, location: CLLocationCoordinate2D) async throws -> Waypoint {
+        let session = try await SupabaseManager.shared.auth.session
+        
+        // Get user's main route or create one if it doesn't exist
+        let routeId = try await getOrCreateMainRoute(for: session.user.id)
+        
+        // Determine the sequence order for the new waypoint
+        let maxSequence = waypoints
+            .filter { $0.routeId == routeId }
+            .map { $0.sequenceOrder }
+            .max() ?? -1
+        let newSequenceOrder = maxSequence + 1
+        
+        // Create location data - using same location for both actual and known
+        let locationData = LocationData(
+            latitude: location.latitude,
+            longitude: location.longitude,
+            address: nil,
+            city: nil,
+            country: nil
+        )
+        
+        // Prepare waypoint data for insertion
+        struct WaypointInsert: Codable {
+            let id: String
+            let route_id: String
+            let user_id: String
+            let name: String
+            let known_location: LocationData
+            let actual_location: LocationData
+            let sequence_order: Int
+            let arrival_time: String
+            let created_at: String
+            let updated_at: String
+        }
+        
+        let newWaypointId = UUID()
+        let now = Date()
+        let waypointInsert = WaypointInsert(
+            id: newWaypointId.uuidString,
+            route_id: routeId.uuidString,
+            user_id: session.user.id.uuidString,
+            name: name,
+            known_location: locationData,
+            actual_location: locationData,
+            sequence_order: newSequenceOrder,
+            arrival_time: ISO8601DateFormatter().string(from: now),
+            created_at: ISO8601DateFormatter().string(from: now),
+            updated_at: ISO8601DateFormatter().string(from: now)
+        )
+        
+        // Insert into database
+        _ = try await SupabaseManager.shared.client
+            .from("waypoints")
+            .insert(waypointInsert)
+            .execute()
+        
+        // Create the waypoint object
+        let newWaypoint = Waypoint(
+            id: newWaypointId,
+            routeId: routeId,
+            userId: session.user.id,
+            name: name,
+            knownLocation: locationData,
+            actualLocation: locationData,
+            granularityLevel: "precise",
+            sequenceOrder: newSequenceOrder,
+            arrivalTime: now,
+            departureTime: nil,
+            city: nil,
+            areaCode: nil,
+            country: nil,
+            notes: nil,
+            createdAt: now,
+            updatedAt: now
+        )
+        
+        // Add to local list and sort
+        await MainActor.run {
+            self.waypoints.append(newWaypoint)
+            self.waypoints.sort { $0.sequenceOrder < $1.sequenceOrder }
+        }
+        
+        print("✅ Created waypoint: \(name) at sequence \(newSequenceOrder)")
+        
+        return newWaypoint
+    }
+    
+    private func getOrCreateMainRoute(for userId: UUID) async throws -> UUID {
+        // Check if user has a main route
+        let response = try await SupabaseManager.shared.client
+            .from("routes")
+            .select("id")
+            .eq("user_id", value: userId.uuidString)
+            .order("created_at", ascending: true)
+            .limit(1)
+            .execute()
+        
+        if let existingRoutes = try? JSONDecoder().decode([[String: String]].self, from: response.data),
+           let firstRoute = existingRoutes.first,
+           let routeIdString = firstRoute["id"],
+           let routeId = UUID(uuidString: routeIdString) {
+            return routeId
+        }
+        
+        // Create a new route if none exists
+        struct RouteInsert: Codable {
+            let id: String
+            let user_id: String
+            let name: String
+            let description: String?
+            let status: String
+            let privacy_level: String
+            let created_at: String
+            let updated_at: String
+        }
+        
+        let newRouteId = UUID()
+        let now = ISO8601DateFormatter().string(from: Date())
+        
+        let newRoute = RouteInsert(
+            id: newRouteId.uuidString,
+            user_id: userId.uuidString,
+            name: "My Journey",
+            description: "Main travel route",
+            status: "active",
+            privacy_level: "private",
+            created_at: now,
+            updated_at: now
+        )
+        
+        _ = try await SupabaseManager.shared.client
+            .from("routes")
+            .insert(newRoute)
+            .execute()
+        
+        print("✅ Created main route for user")
+        
+        return newRouteId
     }
 }
 

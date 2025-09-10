@@ -60,8 +60,8 @@ struct LiquidGlassButtonStyle: ButtonStyle {
                             .fill(
                                 LinearGradient(
                                     colors: [
-                                        Color.blue.opacity(0.8),
-                                        Color.purple.opacity(0.8)
+                                        Color.blue,
+                                        Color.blue.opacity(0.9)
                                     ],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
@@ -70,10 +70,10 @@ struct LiquidGlassButtonStyle: ButtonStyle {
                     }
                     
                     Capsule()
-                        .fill(isPrimary ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
+                        .fill(isPrimary ? Color.white.opacity(0.15) : Color.white.opacity(0.8))
                         .background(
                             Capsule()
-                                .fill(.ultraThinMaterial)
+                                .fill(isPrimary ? .ultraThinMaterial : .regularMaterial)
                         )
                     
                     Capsule()
@@ -105,6 +105,7 @@ struct LiquidGlassTextField: View {
     var body: some View {
         TextField(placeholder, text: $text)
             .font(.system(size: 17, weight: .regular, design: .rounded))
+            .foregroundColor(.white)
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .background(
@@ -155,18 +156,26 @@ struct AnimatedGradientBackground: View {
     @State private var animateGradient = false
     
     var body: some View {
-        LinearGradient(
-            colors: [
-                Color(red: 0.1, green: 0.2, blue: 0.45),
-                Color(red: 0.2, green: 0.1, blue: 0.4),
-                Color(red: 0.15, green: 0.25, blue: 0.5)
-            ],
-            startPoint: animateGradient ? .topLeading : .bottomLeading,
-            endPoint: animateGradient ? .bottomTrailing : .topTrailing
-        )
+        ZStack {
+            // Clean, subtle gradient background
+            LinearGradient(
+                colors: [
+                    Color(red: 0.95, green: 0.95, blue: 0.97),
+                    Color(red: 0.92, green: 0.94, blue: 0.96),
+                    Color(red: 0.90, green: 0.92, blue: 0.95)
+                ],
+                startPoint: animateGradient ? .topLeading : .bottomLeading,
+                endPoint: animateGradient ? .bottomTrailing : .topTrailing
+            )
+            
+            // Glass overlay for depth
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .opacity(0.8)
+        }
         .ignoresSafeArea()
         .onAppear {
-            withAnimation(.easeInOut(duration: 5).repeatForever(autoreverses: true)) {
+            withAnimation(.easeInOut(duration: 8).repeatForever(autoreverses: true)) {
                 animateGradient.toggle()
             }
         }

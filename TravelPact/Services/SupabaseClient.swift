@@ -9,14 +9,17 @@ class SupabaseManager {
     static let shared = SupabaseManager()
     
     let client: SupabaseClient
+    let supabaseURL: String
     
     private init() {
         // Hardcoded values for development - in production these should come from environment variables
-        let supabaseURL = "https://bmhqpuppfvqxyclnkhsw.supabase.co"
+        let supabaseURLString = "https://bmhqpuppfvqxyclnkhsw.supabase.co"
         let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtaHFwdXBwZnZxeHljbG5raHN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxOTQ4MjAsImV4cCI6MjA3Mjc3MDgyMH0.5S4EL-2FTEn2cquAAFXqMU-pTTtITlW2ADRJy3x6EzQ"
         
-        guard let url = URL(string: supabaseURL) else {
-            fatalError("Invalid Supabase URL: \(supabaseURL)")
+        self.supabaseURL = supabaseURLString
+        
+        guard let url = URL(string: supabaseURLString) else {
+            fatalError("Invalid Supabase URL: \(supabaseURLString)")
         }
         
         self.client = SupabaseClient(
@@ -24,7 +27,7 @@ class SupabaseManager {
             supabaseKey: supabaseAnonKey
         )
         
-        print("SupabaseManager initialized with URL: \(supabaseURL)")
+        print("SupabaseManager initialized with URL: \(supabaseURLString)")
     }
     
     var auth: AuthClient {
@@ -44,17 +47,19 @@ class SupabaseManager {
     }
 }
 
-struct UserProfile: Codable {
-    let id: UUID
-    let phone: String
-    let name: String
-    let photoURL: String?
-    let location: LocationData?
-    let skills: [String]?
-    let createdAt: Date
-    let updatedAt: Date
+// MARK: - Core Data Models
+
+public struct UserProfile: Codable {
+    public let id: UUID
+    public let phone: String
+    public let name: String
+    public let photoURL: String?
+    public let location: LocationData?
+    public let skills: [String]?
+    public let createdAt: Date
+    public let updatedAt: Date
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id
         case phone
         case name
@@ -66,10 +71,10 @@ struct UserProfile: Codable {
     }
 }
 
-struct LocationData: Codable, Equatable {
-    let latitude: Double
-    let longitude: Double
-    let address: String?
-    let city: String?
-    let country: String?
+public struct LocationData: Codable, Equatable {
+    public let latitude: Double
+    public let longitude: Double
+    public let address: String?
+    public let city: String?
+    public let country: String?
 }

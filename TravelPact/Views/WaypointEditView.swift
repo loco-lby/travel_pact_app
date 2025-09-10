@@ -40,7 +40,7 @@ struct WaypointEditView: View {
                     colors: [
                         Color.black,
                         Color.blue.opacity(0.2),
-                        Color.purple.opacity(0.2)
+                        Color.cyan.opacity(0.2)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -56,7 +56,7 @@ struct WaypointEditView: View {
                                     LinearGradient(
                                         colors: [
                                             Color.blue.opacity(0.3),
-                                            Color.purple.opacity(0.3)
+                                            Color.cyan.opacity(0.3)
                                         ],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
@@ -69,7 +69,7 @@ struct WaypointEditView: View {
                                     .font(.system(size: 50))
                                     .foregroundStyle(
                                         LinearGradient(
-                                            colors: [.blue, .purple],
+                                            colors: [.blue, .cyan],
                                             startPoint: .topLeading,
                                             endPoint: .bottomTrailing
                                         )
@@ -106,7 +106,7 @@ struct WaypointEditView: View {
                                             .font(.system(size: 14))
                                             .foregroundColor(.white.opacity(0.5))
                                         
-                                        Text([city, waypoint.region, waypoint.country]
+                                        Text([waypoint.areaCode, city, waypoint.country]
                                             .compactMap { $0 }
                                             .joined(separator: ", "))
                                             .font(.system(size: 16))
@@ -190,7 +190,7 @@ struct WaypointEditView: View {
             arrivalTime: waypoint.arrivalTime,
             departureTime: waypoint.departureTime,
             city: waypoint.city,
-            region: waypoint.region,
+            areaCode: waypoint.areaCode,
             country: waypoint.country,
             notes: notes.isEmpty ? nil : notes,
             createdAt: waypoint.createdAt,

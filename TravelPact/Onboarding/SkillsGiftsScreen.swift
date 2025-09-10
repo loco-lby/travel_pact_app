@@ -45,12 +45,12 @@ struct SkillsGiftsScreen: View {
                                 .font(.system(size: 60))
                                 .foregroundStyle(
                                     LinearGradient(
-                                        colors: [.purple, .pink],
+                                        colors: [.blue, .cyan],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
                                 )
-                                .shadow(color: .purple.opacity(0.3), radius: 20)
+                                .shadow(color: .blue.opacity(0.3), radius: 20)
                                 .scaleEffect(animateElements ? 1.0 : 0.8)
                                 .opacity(animateElements ? 1.0 : 0.0)
                             
@@ -274,7 +274,7 @@ struct SkillTag: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color.purple.opacity(0.4),
+                            Color.blue.opacity(0.4),
                             Color.pink.opacity(0.4)
                         ],
                         startPoint: .leading,

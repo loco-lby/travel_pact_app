@@ -26,6 +26,10 @@
 	<string>TravelPact needs access to your camera to take profile photos</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>TravelPact needs your location to connect you with nearby travelers</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>TravelPact tracks your journey to automatically create waypoints and connect you with travelers even when the app is in the background</string>
+	<key>NSContactsUsageDescription</key>
+	<string>TravelPact needs access to your contacts to help you connect with friends who are also traveling</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>TravelPact needs access to your photo library to select profile photos</string>
 	<key>UIApplicationSceneManifest</key>

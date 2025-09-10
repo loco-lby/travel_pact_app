@@ -119,9 +119,11 @@ class AuthenticationManager: ObservableObject {
 @main
 struct TravelPactApp: App {
     @StateObject private var authManager = AuthenticationManager()
+    @StateObject private var locationManager = LocationPrivacyManager.shared
     
     init() {
-        // Basic initialization if needed
+        // Initialize the photo analysis manager early to check for incomplete analysis
+        _ = BackgroundPhotoAnalysisManager.shared
     }
     
     var body: some Scene {
@@ -130,7 +132,7 @@ struct TravelPactApp: App {
                 if authManager.isCheckingAuth {
                     LaunchScreen()
                 } else if authManager.isAuthenticated && authManager.hasCompletedProfile {
-                    MainTabView()
+                    GlobeView()
                         .environmentObject(authManager)
                 } else {
                     OnboardingCoordinator()
@@ -152,28 +154,17 @@ struct LaunchScreen: View {
             AnimatedGradientBackground()
             
             VStack {
-                Image(systemName: "airplane.circle.fill")
-                    .font(.system(size: 100))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.white, .white.opacity(0.7)],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .shadow(color: .white.opacity(0.5), radius: 20)
+                Image("Logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .shadow(color: .black.opacity(0.3), radius: 10)
                     .scaleEffect(animateLogo ? 1.0 : 0.8)
                     .opacity(animateLogo ? 1.0 : 0.0)
                 
                 Text("TravelPact")
                     .font(.system(size: 42, weight: .bold, design: .rounded))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.white, .white.opacity(0.9)],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .foregroundColor(.black)
                     .padding(.top, 20)
                     .opacity(animateLogo ? 1.0 : 0.0)
             }

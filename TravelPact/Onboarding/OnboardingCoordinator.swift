@@ -8,6 +8,7 @@ enum OnboardingStep {
     // case locationSetting  // Removed - can be part of profile or done later
     // case skillsGifts      // Removed - optional, can be done in settings
     case photoAnalysis
+    case locationPermission
     case complete
 }
 
@@ -62,6 +63,13 @@ struct OnboardingCoordinator: View {
                         removal: .move(edge: .leading)
                     ))
                 
+            case .locationPermission:
+                LocationPermissionScreen(currentStep: $currentStep)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing),
+                        removal: .move(edge: .leading)
+                    ))
+                
             case .complete:
                 OnboardingCompleteScreen(showMainApp: $showMainApp)
                     .environmentObject(authManager)
@@ -91,7 +99,18 @@ struct OnboardingCompleteScreen: View {
     
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            // Fast spinning globe background
+            SpinningGlobeBackground(spinSpeed: 8.0)
+                .ignoresSafeArea()
+            
+            // Blurred overlay
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .background(
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                )
             
             if showConfetti {
                 ConfettiView()
@@ -166,7 +185,7 @@ struct OnboardingCompleteScreen: View {
                             CompletionIcon(
                                 icon: "sparkles",
                                 label: "Skills Added",
-                                color: .purple
+                                color: .blue
                             )
                         }
                     }
@@ -243,7 +262,7 @@ struct ConfettiView: View {
             let piece = ConfettiPiece(
                 x: CGFloat.random(in: 0...size.width),
                 y: -20,
-                color: [Color.blue, Color.purple, Color.pink, Color.yellow, Color.green].randomElement()!,
+                color: [Color.blue, Color.cyan, Color.green, Color.yellow, Color.orange].randomElement()!,
                 size: CGFloat.random(in: 4...8),
                 velocity: CGFloat.random(in: 100...400)
             )
@@ -291,7 +310,7 @@ struct PhotoAnalysisViewWrapper: View {
             .environmentObject(viewModel)
             .onReceive(viewModel.$isComplete) { isComplete in
                 if isComplete {
-                    currentStep = .complete
+                    currentStep = .locationPermission
                 }
             }
     }

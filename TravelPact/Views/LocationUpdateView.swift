@@ -7,7 +7,6 @@ struct LocationUpdateView: View {
     @State private var selectedLocation: CLLocationCoordinate2D?
     @State private var locationName = ""
     @State private var isUpdating = false
-    @State private var selectedAccuracy: LocationAccuracy = .city
     
     var body: some View {
         NavigationView {
@@ -103,28 +102,6 @@ struct LocationUpdateView: View {
                     }
                     .padding(.horizontal, 24)
                     
-                    // Location Accuracy Selector
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Location Accuracy")
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(.white.opacity(0.7))
-                            .padding(.horizontal, 24)
-                        
-                        HStack(spacing: 12) {
-                            ForEach(LocationAccuracy.allCases, id: \.self) { accuracy in
-                                AccuracyOption(
-                                    accuracy: accuracy,
-                                    isSelected: selectedAccuracy == accuracy,
-                                    action: {
-                                        selectedAccuracy = accuracy
-                                        locationManager.locationAccuracy = accuracy
-                                    }
-                                )
-                            }
-                        }
-                        .padding(.horizontal, 24)
-                    }
-                    
                     Spacer()
                     
                     // Current Location Display
@@ -209,46 +186,3 @@ struct LocationUpdateView: View {
     }
 }
 
-struct AccuracyOption: View {
-    let accuracy: LocationAccuracy
-    let isSelected: Bool
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                Image(systemName: iconName)
-                    .font(.system(size: 24))
-                    .foregroundColor(isSelected ? .white : .white.opacity(0.6))
-                
-                Text(accuracy.displayName)
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(isSelected ? .white : .white.opacity(0.6))
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.blue.opacity(0.3) : Color.white.opacity(0.1))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(
-                                isSelected ? Color.blue : Color.white.opacity(0.2),
-                                lineWidth: isSelected ? 2 : 1
-                            )
-                    )
-            )
-        }
-    }
-    
-    private var iconName: String {
-        switch accuracy {
-        case .city:
-            return "building.2.crop.circle"
-        case .region:
-            return "map.circle"
-        case .country:
-            return "globe"
-        }
-    }
-}

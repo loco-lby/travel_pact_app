@@ -3,6 +3,7 @@ import PhotosUI
 import Supabase
 import Storage
 import Auth
+import MapKit
 
 struct ProfileCreationScreen: View {
     @Binding var currentStep: OnboardingStep
@@ -17,7 +18,18 @@ struct ProfileCreationScreen: View {
     
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            // Globe background with blur overlay
+            OnboardingGlobeBackground(showWaypoints: false, waypoints: [])
+                .ignoresSafeArea()
+            
+            // Blurred overlay
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .background(
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                )
             
             VStack(spacing: 0) {
                 HStack {
@@ -106,7 +118,7 @@ struct ProfileCreationScreen: View {
                                                 
                                                 Text("Add Photo")
                                                     .font(.system(size: 14, weight: .medium, design: .rounded))
-                                                    .foregroundColor(.white.opacity(0.6))
+                                                    .foregroundColor(.white.opacity(0.7))
                                             }
                                         }
                                     }

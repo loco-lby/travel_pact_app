@@ -15,7 +15,18 @@ struct PhoneAuthScreen: View {
     
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            // Globe background with blur overlay
+            OnboardingGlobeBackground(showWaypoints: false, waypoints: [])
+                .ignoresSafeArea()
+            
+            // Blurred overlay
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .background(
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                )
             
             VStack(spacing: 0) {
                 HStack {
@@ -101,7 +112,7 @@ struct PhoneAuthScreen: View {
                                                 .foregroundColor(.white)
                                             Image(systemName: "chevron.down")
                                                 .font(.system(size: 12))
-                                                .foregroundColor(.white.opacity(0.6))
+                                                .foregroundColor(.white.opacity(0.7))
                                         }
                                         .padding(.horizontal, 16)
                                         .padding(.vertical, 16)

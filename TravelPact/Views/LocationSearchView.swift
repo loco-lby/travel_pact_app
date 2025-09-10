@@ -4,6 +4,7 @@ import CoreLocation
 
 struct LocationSearchView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var locationManager = LocationPrivacyManager.shared
     @State private var searchText = ""
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
@@ -27,6 +28,20 @@ struct LocationSearchView: View {
                     MapMarker(coordinate: pin.coordinate, tint: .blue)
                 }
                 .ignoresSafeArea(edges: .bottom)
+                .onAppear {
+                    // Center on user's actual location if available
+                    if let actualLocation = locationManager.actualLocation {
+                        region = MKCoordinateRegion(
+                            center: actualLocation.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        )
+                    } else if let knownLocation = locationManager.knownLocation {
+                        region = MKCoordinateRegion(
+                            center: knownLocation,
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        )
+                    }
+                }
                 
                 // Crosshair in center
                 Image(systemName: "plus")

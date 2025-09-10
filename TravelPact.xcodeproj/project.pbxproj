@@ -7,57 +7,118 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01D898B6A4C9C2FD30FD7080 /* ContactTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF675803F9DD6AFD5B79A40 /* ContactTypes.swift */; };
 		0AD166D886F8E0BDAB026406 /* LocationSettingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6D402AE586F7DFD2D0FD99 /* LocationSettingScreen.swift */; };
 		116BC5A8BD81A3796B0481E8 /* PhotoAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA5251739D9D558A7FAA6D6 /* PhotoAnalysisView.swift */; };
+		15B3C4DB763FE4E3D929C8C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E1C2C18CB032BFDE1685E0 /* Assets.xcassets */; };
 		184A8BBC23D164E531529888 /* WaypointEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265821E9E20CC514F5D75A66 /* WaypointEditView.swift */; };
+		18C4E7CF5F6D8FDFC135F778 /* ContactDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD4E1BF609B9D7E9A747AAA /* ContactDataService.swift */; };
+		19371CBD613A543714F86EE5 /* AppModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65E997A3BEC20898716EEF7 /* AppModels.swift */; };
 		1DF4DCD0C5BC92EA8106272C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 554D1937559BA8E2CE8B6469 /* Supabase */; };
+		1F6944994CADF838067049F6 /* MediaAnalysisBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81DD45674503BBF141EDC47 /* MediaAnalysisBubble.swift */; };
+		219D88F39132B967C5C4D568 /* ContactGlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58567CC94DAD2AC8C26B3C7E /* ContactGlobeView.swift */; };
 		25422955C1EB20EAB1887EEA /* LocationUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61577663CD7C1BEDCD0912F /* LocationUpdateView.swift */; };
+		290ECBE35C9841572438A61A /* MediaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6854358B17D659CD12584C0F /* MediaService.swift */; };
+		2FAD981DB5A1E89CBEF9931D /* ContactLocation.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5060317F4423D95C8E8277F6 /* ContactLocation.xcdatamodeld */; };
+		3262766219439E59B737461A /* ContactSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606A75A15A4DB6357FF1930E /* ContactSyncService.swift */; };
 		36F18C6AE84F6FB03B4A6BDE /* ConnectionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6AD12BA3FD1DD336F6918D /* ConnectionsManager.swift */; };
 		3ADE299B97E48B5E7350042A /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632167C4CC4369F56B95C4B /* MainTabView.swift */; };
+		43456319FC5B4E516E9BBA2D /* ProfileMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3BA4BDE02A0572A1B51410 /* ProfileMenuView.swift */; };
+		47AD4626DDD3C27AFFCD0E44 /* PactCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8E2FAE3549E39E146C793DD /* PactCreationView.swift */; };
+		4C57A4B008E90CC2DD78AA0C /* CoordinateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A537D421CBF3823FBA3A53 /* CoordinateWrapper.swift */; };
 		4EB6BD08E469B2ABD93375BE /* LocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3695034BD4F7235017C12D89 /* LocationSearchView.swift */; };
 		5DDBC8C6E2EC3069B3A5DA80 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4403AC5418D925A6E07A7FFD /* AppConfig.swift */; };
+		5FBAAE54AA3C2FF8FA762CC5 /* WaypointMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9403468B560031140D38AA06 /* WaypointMediaView.swift */; };
+		5FCE585ED152CE38841F6244 /* ContactLocationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18C3504BE63DB2D8A3E1541 /* ContactLocationCard.swift */; };
 		6A090A6928B54BBE72020097 /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C1E0ADD24B8B584DBA3F7D /* WelcomeScreen.swift */; };
+		6B8065966628ECE86492C08F /* PhotoSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5713EC92E6E7894FC5663FD /* PhotoSelectionView.swift */; };
 		78144FF8159931082854B060 /* AddConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EC2F5DB934124684ECA7DF /* AddConnectionView.swift */; };
+		7D3D2801130EC43C4F2EDB8F /* CoreModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842843C4CECBDBDB24E506A3 /* CoreModels.swift */; };
+		89B6A3F530EA845A37F84478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF2666AF7514544769033EFA /* LaunchScreen.storyboard */; };
+		89F2E94BDB59731F01109FB2 /* SpinningGlobeBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9921C67D7C56423208430 /* SpinningGlobeBackground.swift */; };
 		8CBE391A9D298B69DA3C38ED /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CBA18540583B9CC40358E2 /* PreviewData.swift */; };
 		9DDCE3FC7C30C099C25C10D2 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719D4066A94014285C933A2 /* OnboardingCoordinator.swift */; };
+		A189C8333F4D8EA40CBD87EA /* LocationPermissionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4821DBD03DCB75EB377F57 /* LocationPermissionScreen.swift */; };
+		A5B4BA7FE08701EDA77FF18D /* ContactLocationMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2F4938D83514F8C3516693 /* ContactLocationMarker.swift */; };
+		AE46347912F672310D28C58C /* PhotoAnalysisProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A654075887DD4B7B6981BB7C /* PhotoAnalysisProgressBar.swift */; };
+		B1B01D75430293AA8DD639F4 /* WaypointReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCEDEA8BAFCF84DAB27CDEB /* WaypointReviewView.swift */; };
+		B44CBA7521781FAB888A8FD5 /* WaypointPulse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D23B469ADCA32476887EC9 /* WaypointPulse.swift */; };
+		B885966860FFE40206625F4E /* BackgroundPhotoAnalysisManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932F10A384198C3D74148DFD /* BackgroundPhotoAnalysisManager.swift */; };
 		BBABC8395298A9341AC1482D /* ProfileCreationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9450A87673F26A549F5B9CE /* ProfileCreationScreen.swift */; };
 		BCDA85094E654102179BA0CE /* PhotoAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045DA641712B1ADC8337818A /* PhotoAnalysisService.swift */; };
 		BE058A64F04CC14A8099AECB /* GlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39362A7B61321E44BDB46685 /* GlobeView.swift */; };
 		C51F2E48D2A8041EB0A9BBF5 /* RoutePathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C3E7F10C986BA3897D0BB /* RoutePathView.swift */; };
 		C5361B014702E20302A63BF6 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11A75C430269FC3B4874AA /* SupabaseClient.swift */; };
+		C913FF14552926B516805F9F /* ContactCarousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09073D987B3562EC2E2BF52C /* ContactCarousel.swift */; };
+		D5680689AACC5B545DC6B937 /* MediaUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBE980CCF2B7017AD4500DB /* MediaUploadService.swift */; };
+		D9C98B933E3589DBF5A2BA84 /* PactService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A96C5BEB2B1901C5FCE2EE /* PactService.swift */; };
+		D9FB4E2EE9C6EC32E4012A62 /* PactModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A1B760237A41A65BDF6CE /* PactModels.swift */; };
 		DEC7D398F6A2B1B1FC4E111D /* LocationPrivacyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197862B0C691FEFD20FEC774 /* LocationPrivacyManager.swift */; };
 		E12E8777AF869B76B8C506C6 /* SkillsGiftsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524D91E3788C8D18CB88A092 /* SkillsGiftsScreen.swift */; };
 		E396E44CD82D5420D27E04E0 /* LiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D763F4B1DB24DA8B195348AA /* LiquidGlass.swift */; };
 		E57C6098030870537F154848 /* PhoneAuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EBF78697EC393C14179DE1 /* PhoneAuthScreen.swift */; };
 		E5F03F987B4C3CD6BA4F7532 /* TravelPactApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789FF84B7928E67823E6D35 /* TravelPactApp.swift */; };
+		EB60B48D31A8FFFA0CCCAC03 /* ContactLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9B42593E02CDAAA771179A /* ContactLocationManager.swift */; };
 		EF4005793A55AA28F181D240 /* WaypointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87488726AF9B74C231233939 /* WaypointsManager.swift */; };
+		F561A6AE569AA911C839F808 /* ContactLocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF9E4A9CBDC2D8F83F3E5E5 /* ContactLocationSearchView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		045DA641712B1ADC8337818A /* PhotoAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalysisService.swift; sourceTree = "<group>"; };
+		09073D987B3562EC2E2BF52C /* ContactCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCarousel.swift; sourceTree = "<group>"; };
 		197862B0C691FEFD20FEC774 /* LocationPrivacyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPrivacyManager.swift; sourceTree = "<group>"; };
+		19A537D421CBF3823FBA3A53 /* CoordinateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateWrapper.swift; sourceTree = "<group>"; };
+		1BD4E1BF609B9D7E9A747AAA /* ContactDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDataService.swift; sourceTree = "<group>"; };
+		1DF9E4A9CBDC2D8F83F3E5E5 /* ContactLocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactLocationSearchView.swift; sourceTree = "<group>"; };
+		1FBE980CCF2B7017AD4500DB /* MediaUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUploadService.swift; sourceTree = "<group>"; };
 		20EBF78697EC393C14179DE1 /* PhoneAuthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAuthScreen.swift; sourceTree = "<group>"; };
 		265821E9E20CC514F5D75A66 /* WaypointEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointEditView.swift; sourceTree = "<group>"; };
+		2CF675803F9DD6AFD5B79A40 /* ContactTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTypes.swift; sourceTree = "<group>"; };
+		2E178F5FCE1174CF4F3B2DEF /* ContactLocation.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ContactLocation.xcdatamodel; sourceTree = "<group>"; };
 		3695034BD4F7235017C12D89 /* LocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchView.swift; sourceTree = "<group>"; };
+		37E1C2C18CB032BFDE1685E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		39362A7B61321E44BDB46685 /* GlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeView.swift; sourceTree = "<group>"; };
+		42A9921C67D7C56423208430 /* SpinningGlobeBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinningGlobeBackground.swift; sourceTree = "<group>"; };
 		4403AC5418D925A6E07A7FFD /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		4CCEDEA8BAFCF84DAB27CDEB /* WaypointReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointReviewView.swift; sourceTree = "<group>"; };
 		524D91E3788C8D18CB88A092 /* SkillsGiftsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsGiftsScreen.swift; sourceTree = "<group>"; };
+		58567CC94DAD2AC8C26B3C7E /* ContactGlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGlobeView.swift; sourceTree = "<group>"; };
+		5FABEE1A944CDD84B7F050AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		606A75A15A4DB6357FF1930E /* ContactSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSyncService.swift; sourceTree = "<group>"; };
+		6854358B17D659CD12584C0F /* MediaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaService.swift; sourceTree = "<group>"; };
+		7B2F4938D83514F8C3516693 /* ContactLocationMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactLocationMarker.swift; sourceTree = "<group>"; };
 		7BA5251739D9D558A7FAA6D6 /* PhotoAnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalysisView.swift; sourceTree = "<group>"; };
+		842843C4CECBDBDB24E506A3 /* CoreModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreModels.swift; sourceTree = "<group>"; };
 		8632167C4CC4369F56B95C4B /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		87488726AF9B74C231233939 /* WaypointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointsManager.swift; sourceTree = "<group>"; };
+		932F10A384198C3D74148DFD /* BackgroundPhotoAnalysisManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPhotoAnalysisManager.swift; sourceTree = "<group>"; };
+		9403468B560031140D38AA06 /* WaypointMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointMediaView.swift; sourceTree = "<group>"; };
+		996A1B760237A41A65BDF6CE /* PactModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PactModels.swift; sourceTree = "<group>"; };
+		9C3BA4BDE02A0572A1B51410 /* ProfileMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMenuView.swift; sourceTree = "<group>"; };
 		9D6D402AE586F7DFD2D0FD99 /* LocationSettingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingScreen.swift; sourceTree = "<group>"; };
 		9E6AD12BA3FD1DD336F6918D /* ConnectionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsManager.swift; sourceTree = "<group>"; };
+		A18C3504BE63DB2D8A3E1541 /* ContactLocationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactLocationCard.swift; sourceTree = "<group>"; };
 		A61577663CD7C1BEDCD0912F /* LocationUpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUpdateView.swift; sourceTree = "<group>"; };
+		A654075887DD4B7B6981BB7C /* PhotoAnalysisProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalysisProgressBar.swift; sourceTree = "<group>"; };
+		A65E997A3BEC20898716EEF7 /* AppModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModels.swift; sourceTree = "<group>"; };
 		A789FF84B7928E67823E6D35 /* TravelPactApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelPactApp.swift; sourceTree = "<group>"; };
 		AD11A75C430269FC3B4874AA /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
+		AF2666AF7514544769033EFA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B81DD45674503BBF141EDC47 /* MediaAnalysisBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAnalysisBubble.swift; sourceTree = "<group>"; };
+		B8E2FAE3549E39E146C793DD /* PactCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PactCreationView.swift; sourceTree = "<group>"; };
 		BC5C3E7F10C986BA3897D0BB /* RoutePathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePathView.swift; sourceTree = "<group>"; };
 		C4CBA18540583B9CC40358E2 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
+		CE4821DBD03DCB75EB377F57 /* LocationPermissionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionScreen.swift; sourceTree = "<group>"; };
 		D3C1E0ADD24B8B584DBA3F7D /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		D763F4B1DB24DA8B195348AA /* LiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlass.swift; sourceTree = "<group>"; };
+		E5D23B469ADCA32476887EC9 /* WaypointPulse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointPulse.swift; sourceTree = "<group>"; };
+		F3A96C5BEB2B1901C5FCE2EE /* PactService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PactService.swift; sourceTree = "<group>"; };
 		F4EC2F5DB934124684ECA7DF /* AddConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddConnectionView.swift; sourceTree = "<group>"; };
+		F5713EC92E6E7894FC5663FD /* PhotoSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectionView.swift; sourceTree = "<group>"; };
 		F719D4066A94014285C933A2 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
 		F9450A87673F26A549F5B9CE /* ProfileCreationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationScreen.swift; sourceTree = "<group>"; };
 		FC197B6B653429CE829DE9C5 /* TravelPact.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TravelPact.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF9B42593E02CDAAA771179A /* ContactLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactLocationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +136,15 @@
 		0052CA68E2D6C10DBC8E329E /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				932F10A384198C3D74148DFD /* BackgroundPhotoAnalysisManager.swift */,
 				9E6AD12BA3FD1DD336F6918D /* ConnectionsManager.swift */,
+				1BD4E1BF609B9D7E9A747AAA /* ContactDataService.swift */,
+				FF9B42593E02CDAAA771179A /* ContactLocationManager.swift */,
+				606A75A15A4DB6357FF1930E /* ContactSyncService.swift */,
 				197862B0C691FEFD20FEC774 /* LocationPrivacyManager.swift */,
+				6854358B17D659CD12584C0F /* MediaService.swift */,
+				1FBE980CCF2B7017AD4500DB /* MediaUploadService.swift */,
+				F3A96C5BEB2B1901C5FCE2EE /* PactService.swift */,
 				045DA641712B1ADC8337818A /* PhotoAnalysisService.swift */,
 				AD11A75C430269FC3B4874AA /* SupabaseClient.swift */,
 				87488726AF9B74C231233939 /* WaypointsManager.swift */,
@@ -95,6 +163,7 @@
 		146DED8411FCCE855901E3B0 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				CE4821DBD03DCB75EB377F57 /* LocationPermissionScreen.swift */,
 				9D6D402AE586F7DFD2D0FD99 /* LocationSettingScreen.swift */,
 				F719D4066A94014285C933A2 /* OnboardingCoordinator.swift */,
 				20EBF78697EC393C14179DE1 /* PhoneAuthScreen.swift */,
@@ -104,6 +173,20 @@
 				D3C1E0ADD24B8B584DBA3F7D /* WelcomeScreen.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		3E9FB2FBE30C744E43EA5A88 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				09073D987B3562EC2E2BF52C /* ContactCarousel.swift */,
+				A18C3504BE63DB2D8A3E1541 /* ContactLocationCard.swift */,
+				7B2F4938D83514F8C3516693 /* ContactLocationMarker.swift */,
+				B81DD45674503BBF141EDC47 /* MediaAnalysisBubble.swift */,
+				A654075887DD4B7B6981BB7C /* PhotoAnalysisProgressBar.swift */,
+				42A9921C67D7C56423208430 /* SpinningGlobeBackground.swift */,
+				E5D23B469ADCA32476887EC9 /* WaypointPulse.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		3EA2A2ADC9A5AF5867FDFEC3 /* Onboarding */ = {
@@ -124,12 +207,17 @@
 		7051A0A2420F12FC724CC773 /* TravelPact */ = {
 			isa = PBXGroup;
 			children = (
+				3E9FB2FBE30C744E43EA5A88 /* Components */,
 				B5779A87CD7BF27C9E8E5C8B /* Config */,
 				FFD7B7038BF30A25619A69D1 /* Design */,
+				F5FCA1290F4F38C9DF38528A /* Models */,
 				146DED8411FCCE855901E3B0 /* Onboarding */,
 				8880BE6FA7AE8C248ED4646B /* Preview Content */,
 				0052CA68E2D6C10DBC8E329E /* Services */,
 				8D217BF8944BD29BBD36B48D /* Views */,
+				37E1C2C18CB032BFDE1685E0 /* Assets.xcassets */,
+				5FABEE1A944CDD84B7F050AB /* Info.plist */,
+				AF2666AF7514544769033EFA /* LaunchScreen.storyboard */,
 				8632167C4CC4369F56B95C4B /* MainTabView.swift */,
 				A789FF84B7928E67823E6D35 /* TravelPactApp.swift */,
 			);
@@ -149,11 +237,18 @@
 			children = (
 				3EA2A2ADC9A5AF5867FDFEC3 /* Onboarding */,
 				F4EC2F5DB934124684ECA7DF /* AddConnectionView.swift */,
+				58567CC94DAD2AC8C26B3C7E /* ContactGlobeView.swift */,
+				1DF9E4A9CBDC2D8F83F3E5E5 /* ContactLocationSearchView.swift */,
 				39362A7B61321E44BDB46685 /* GlobeView.swift */,
 				3695034BD4F7235017C12D89 /* LocationSearchView.swift */,
 				A61577663CD7C1BEDCD0912F /* LocationUpdateView.swift */,
+				B8E2FAE3549E39E146C793DD /* PactCreationView.swift */,
+				F5713EC92E6E7894FC5663FD /* PhotoSelectionView.swift */,
+				9C3BA4BDE02A0572A1B51410 /* ProfileMenuView.swift */,
 				BC5C3E7F10C986BA3897D0BB /* RoutePathView.swift */,
 				265821E9E20CC514F5D75A66 /* WaypointEditView.swift */,
+				9403468B560031140D38AA06 /* WaypointMediaView.swift */,
+				4CCEDEA8BAFCF84DAB27CDEB /* WaypointReviewView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -164,6 +259,19 @@
 				4403AC5418D925A6E07A7FFD /* AppConfig.swift */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		F5FCA1290F4F38C9DF38528A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A65E997A3BEC20898716EEF7 /* AppModels.swift */,
+				5060317F4423D95C8E8277F6 /* ContactLocation.xcdatamodeld */,
+				2CF675803F9DD6AFD5B79A40 /* ContactTypes.swift */,
+				19A537D421CBF3823FBA3A53 /* CoordinateWrapper.swift */,
+				842843C4CECBDBDB24E506A3 /* CoreModels.swift */,
+				996A1B760237A41A65BDF6CE /* PactModels.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		FFD7B7038BF30A25619A69D1 /* Design */ = {
@@ -183,6 +291,7 @@
 			buildPhases = (
 				6001365D463CFDDD3F20F7B1 /* Load Environment Variables */,
 				7E3DD47A92A4E2E1B2EEEA9E /* Sources */,
+				D2CE5B1B8045119031B6F596 /* Resources */,
 				9BC494A3CCE1EAB130F8D750 /* Frameworks */,
 			);
 			buildRules = (
@@ -207,7 +316,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					E647946B46867ECB52BA469F = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = AZPJ6UN5SY;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -233,6 +342,18 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D2CE5B1B8045119031B6F596 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15B3C4DB763FE4E3D929C8C3 /* Assets.xcassets in Resources */,
+				89B6A3F530EA845A37F84478 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		6001365D463CFDDD3F20F7B1 /* Load Environment Variables */ = {
@@ -263,25 +384,53 @@
 			files = (
 				78144FF8159931082854B060 /* AddConnectionView.swift in Sources */,
 				5DDBC8C6E2EC3069B3A5DA80 /* AppConfig.swift in Sources */,
+				19371CBD613A543714F86EE5 /* AppModels.swift in Sources */,
+				B885966860FFE40206625F4E /* BackgroundPhotoAnalysisManager.swift in Sources */,
 				36F18C6AE84F6FB03B4A6BDE /* ConnectionsManager.swift in Sources */,
+				C913FF14552926B516805F9F /* ContactCarousel.swift in Sources */,
+				18C4E7CF5F6D8FDFC135F778 /* ContactDataService.swift in Sources */,
+				219D88F39132B967C5C4D568 /* ContactGlobeView.swift in Sources */,
+				2FAD981DB5A1E89CBEF9931D /* ContactLocation.xcdatamodeld in Sources */,
+				5FCE585ED152CE38841F6244 /* ContactLocationCard.swift in Sources */,
+				EB60B48D31A8FFFA0CCCAC03 /* ContactLocationManager.swift in Sources */,
+				A5B4BA7FE08701EDA77FF18D /* ContactLocationMarker.swift in Sources */,
+				F561A6AE569AA911C839F808 /* ContactLocationSearchView.swift in Sources */,
+				3262766219439E59B737461A /* ContactSyncService.swift in Sources */,
+				01D898B6A4C9C2FD30FD7080 /* ContactTypes.swift in Sources */,
+				4C57A4B008E90CC2DD78AA0C /* CoordinateWrapper.swift in Sources */,
+				7D3D2801130EC43C4F2EDB8F /* CoreModels.swift in Sources */,
 				BE058A64F04CC14A8099AECB /* GlobeView.swift in Sources */,
 				E396E44CD82D5420D27E04E0 /* LiquidGlass.swift in Sources */,
+				A189C8333F4D8EA40CBD87EA /* LocationPermissionScreen.swift in Sources */,
 				DEC7D398F6A2B1B1FC4E111D /* LocationPrivacyManager.swift in Sources */,
 				4EB6BD08E469B2ABD93375BE /* LocationSearchView.swift in Sources */,
 				0AD166D886F8E0BDAB026406 /* LocationSettingScreen.swift in Sources */,
 				25422955C1EB20EAB1887EEA /* LocationUpdateView.swift in Sources */,
 				3ADE299B97E48B5E7350042A /* MainTabView.swift in Sources */,
+				1F6944994CADF838067049F6 /* MediaAnalysisBubble.swift in Sources */,
+				290ECBE35C9841572438A61A /* MediaService.swift in Sources */,
+				D5680689AACC5B545DC6B937 /* MediaUploadService.swift in Sources */,
 				9DDCE3FC7C30C099C25C10D2 /* OnboardingCoordinator.swift in Sources */,
+				47AD4626DDD3C27AFFCD0E44 /* PactCreationView.swift in Sources */,
+				D9FB4E2EE9C6EC32E4012A62 /* PactModels.swift in Sources */,
+				D9C98B933E3589DBF5A2BA84 /* PactService.swift in Sources */,
 				E57C6098030870537F154848 /* PhoneAuthScreen.swift in Sources */,
+				AE46347912F672310D28C58C /* PhotoAnalysisProgressBar.swift in Sources */,
 				BCDA85094E654102179BA0CE /* PhotoAnalysisService.swift in Sources */,
 				116BC5A8BD81A3796B0481E8 /* PhotoAnalysisView.swift in Sources */,
+				6B8065966628ECE86492C08F /* PhotoSelectionView.swift in Sources */,
 				8CBE391A9D298B69DA3C38ED /* PreviewData.swift in Sources */,
 				BBABC8395298A9341AC1482D /* ProfileCreationScreen.swift in Sources */,
+				43456319FC5B4E516E9BBA2D /* ProfileMenuView.swift in Sources */,
 				C51F2E48D2A8041EB0A9BBF5 /* RoutePathView.swift in Sources */,
 				E12E8777AF869B76B8C506C6 /* SkillsGiftsScreen.swift in Sources */,
+				89F2E94BDB59731F01109FB2 /* SpinningGlobeBackground.swift in Sources */,
 				C5361B014702E20302A63BF6 /* SupabaseClient.swift in Sources */,
 				E5F03F987B4C3CD6BA4F7532 /* TravelPactApp.swift in Sources */,
 				184A8BBC23D164E531529888 /* WaypointEditView.swift in Sources */,
+				5FBAAE54AA3C2FF8FA762CC5 /* WaypointMediaView.swift in Sources */,
+				B44CBA7521781FAB888A8FD5 /* WaypointPulse.swift in Sources */,
+				B1B01D75430293AA8DD639F4 /* WaypointReviewView.swift in Sources */,
 				EF4005793A55AA28F181D240 /* WaypointsManager.swift in Sources */,
 				6A090A6928B54BBE72020097 /* WelcomeScreen.swift in Sources */,
 			);
@@ -327,7 +476,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AZPJ6UN5SY;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -340,6 +489,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "TravelPact needs access to your camera to take profile photos";
+				INFOPLIST_KEY_NSContactsUsageDescription = "TravelPact needs access to your contacts to help you connect with friends who are also traveling";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "TravelPact tracks your journey to automatically create waypoints and connect you with travelers even when the app is in the background";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "TravelPact needs your location to connect you with nearby travelers";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "TravelPact needs access to your photo library to select profile photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -364,6 +515,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = TravelPact/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -374,7 +526,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.travelpact.app;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -383,6 +535,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = TravelPact/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -393,7 +546,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.travelpact.app;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -435,7 +588,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AZPJ6UN5SY;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -454,6 +607,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "TravelPact needs access to your camera to take profile photos";
+				INFOPLIST_KEY_NSContactsUsageDescription = "TravelPact needs access to your contacts to help you connect with friends who are also traveling";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "TravelPact tracks your journey to automatically create waypoints and connect you with travelers even when the app is in the background";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "TravelPact needs your location to connect you with nearby travelers";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "TravelPact needs access to your photo library to select profile photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -516,6 +671,19 @@
 			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		5060317F4423D95C8E8277F6 /* ContactLocation.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2E178F5FCE1174CF4F3B2DEF /* ContactLocation.xcdatamodel */,
+			);
+			currentVersion = 2E178F5FCE1174CF4F3B2DEF /* ContactLocation.xcdatamodel */;
+			path = ContactLocation.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 9229AF24FA9E6418E67D2744 /* Project object */;
 }

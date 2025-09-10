@@ -1,27 +1,41 @@
 import SwiftUI
+import MapKit
 
 struct WelcomeScreen: View {
     @Binding var currentStep: OnboardingStep
     @State private var animateElements = false
+    @State private var showConfetti = false
     
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            // Globe background with blur overlay
+            SpinningGlobeBackground(spinSpeed: 20.0)
+                .ignoresSafeArea()
+            
+            // Blurred overlay
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .background(
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                )
+            
+            // Confetti layer
+            if showConfetti {
+                ConfettiView()
+                    .allowsHitTesting(false)
+            }
             
             VStack(spacing: 0) {
                 Spacer()
                 
                 VStack(spacing: 32) {
-                    Image(systemName: "airplane.circle.fill")
-                        .font(.system(size: 100))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [.white, .white.opacity(0.7)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .shadow(color: .white.opacity(0.5), radius: 20)
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .shadow(color: .black.opacity(0.3), radius: 10)
                         .scaleEffect(animateElements ? 1.0 : 0.8)
                         .opacity(animateElements ? 1.0 : 0.0)
                     
@@ -60,7 +74,7 @@ struct WelcomeScreen: View {
                             FeatureIcon(
                                 icon: "gift.fill",
                                 title: "Share Skills",
-                                color: .purple
+                                color: .blue
                             )
                             
                             FeatureIcon(
@@ -99,6 +113,11 @@ struct WelcomeScreen: View {
         .onAppear {
             withAnimation(.easeOut(duration: 1.0).delay(0.2)) {
                 animateElements = true
+            }
+            
+            // Show confetti after a delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                showConfetti = true
             }
         }
     }

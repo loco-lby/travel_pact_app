@@ -91,7 +91,7 @@ struct AddConnectionView: View {
                                     HStack {
                                         Image(systemName: "person.circle.fill")
                                             .font(.system(size: 30))
-                                            .foregroundColor(.purple)
+                                            .foregroundColor(.orange)
                                         
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(user.name)
