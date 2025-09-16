@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import SwiftUI
 
 struct PhotoAnalysisProgressBar: View {
@@ -255,3 +257,4 @@ private struct StatView: View {
         }
     }
 }
+*/

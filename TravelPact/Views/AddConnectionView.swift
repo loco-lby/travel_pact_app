@@ -5,6 +5,7 @@ struct AddConnectionView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var connectionsManager: ConnectionsManager
     @State private var connectionName = ""
+    @State private var phoneNumber = ""
     @State private var searchQuery = ""
     @State private var selectedLocation: CLLocationCoordinate2D?
     @State private var locationName = ""
@@ -18,32 +19,15 @@ struct AddConnectionView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                AnimatedGradientBackground()
+                // Glass background overlay
+                backgroundView
                 
                 ScrollView {
-                    VStack(spacing: 24) {
-                        // Header
-                        VStack(spacing: 12) {
-                            Image(systemName: "person.badge.plus")
-                                .font(.system(size: 50))
-                                .foregroundStyle(
-                                    LinearGradient(
-                                        colors: [.white, .white.opacity(0.7)],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                )
-                                .shadow(color: .white.opacity(0.3), radius: 10)
-                            
-                            Text("Add Connection")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                            
-                            Text("Add friends to see on your map")
-                                .font(.system(size: 16, weight: .regular, design: .rounded))
-                                .foregroundColor(.white.opacity(0.7))
-                        }
-                        .padding(.top, 20)
+                    VStack(spacing: 0) {
+                        // Glass container with content
+                        VStack(spacing: 24) {
+                            // Header
+                            headerSection
                         
                         // Search for App Users
                         VStack(alignment: .leading, spacing: 12) {
@@ -137,42 +121,15 @@ struct AddConnectionView: View {
                                 text: $connectionName
                             )
                             
+                            // Phone Number Field
+                            LiquidGlassTextField(
+                                placeholder: "Phone Number (optional)",
+                                text: $phoneNumber,
+                                keyboardType: .phonePad
+                            )
+                            
                             // Location Button
-                            Button(action: { showLocationPicker = true }) {
-                                HStack {
-                                    Image(systemName: "location")
-                                        .font(.system(size: 20))
-                                    
-                                    if locationName.isEmpty {
-                                        Text("Set Their Location")
-                                            .font(.system(size: 16, weight: .medium, design: .rounded))
-                                    } else {
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text("Location Set")
-                                                .font(.system(size: 14, weight: .medium, design: .rounded))
-                                            Text(locationName)
-                                                .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                .foregroundColor(.white.opacity(0.7))
-                                        }
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.5))
-                                }
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.white.opacity(0.1))
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(.ultraThinMaterial)
-                                        )
-                                )
-                            }
+                            locationButton
                             
                             // Notes Field
                             VStack(alignment: .leading, spacing: 8) {
@@ -221,10 +178,22 @@ struct AddConnectionView: View {
                         .disabled(connectionName.isEmpty || isAdding)
                         
                         Spacer(minLength: 20)
+                        }
+                        .padding(24)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.ultraThinMaterial)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                                )
+                        )
+                        .padding(16)
                     }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
@@ -240,6 +209,36 @@ struct AddConnectionView: View {
                 locationName = name
             }
         }
+    }
+    
+    private var backgroundView: some View {
+        Color.black.opacity(0.3)
+            .ignoresSafeArea()
+            .background(.ultraThinMaterial)
+    }
+    
+    private var headerSection: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "person.badge.plus")
+                .font(.system(size: 50))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [.white, .white.opacity(0.7)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .shadow(color: .white.opacity(0.3), radius: 10)
+            
+            Text("Add Connection")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .foregroundColor(.white)
+            
+            Text("Add friends to see on your map")
+                .font(.system(size: 16, weight: .regular, design: .rounded))
+                .foregroundColor(.white.opacity(0.7))
+        }
+        .padding(.top, 20)
     }
     
     private func searchUsers() {
@@ -298,6 +297,8 @@ struct AddConnectionView: View {
             do {
                 try await connectionsManager.addConnection(
                     name: connectionName,
+                    phone: phoneNumber.isEmpty ? nil : phoneNumber,
+                    photoPath: nil,
                     location: selectedLocation,
                     locationName: locationName.isEmpty ? nil : locationName,
                     notes: notes.isEmpty ? nil : notes
@@ -313,5 +314,55 @@ struct AddConnectionView: View {
                 }
             }
         }
+    }
+    
+}
+
+// MARK: - View Components
+extension AddConnectionView {
+    private var locationButton: some View {
+        Button(action: { showLocationPicker = true }) {
+            HStack {
+                Image(systemName: "location")
+                    .font(.system(size: 20))
+                
+                locationButtonContent
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.5))
+            }
+            .foregroundColor(.white)
+            .padding()
+            .background(locationButtonBackground)
+        }
+    }
+    
+    private var locationButtonContent: some View {
+        Group {
+            if locationName.isEmpty {
+                Text("Set Their Location")
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
+            } else {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Location Set")
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                    Text(locationName)
+                        .font(.system(size: 12, weight: .regular, design: .rounded))
+                        .foregroundColor(.white.opacity(0.7))
+                }
+            }
+        }
+    }
+    
+    private var locationButtonBackground: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(Color.white.opacity(0.1))
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.ultraThinMaterial)
+            )
     }
 }

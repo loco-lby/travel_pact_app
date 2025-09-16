@@ -42,7 +42,7 @@ struct LocationSettingScreen: View {
                     
                     Button(action: {
                         withAnimation {
-                            currentStep = .photoAnalysis  // Skip to photo analysis
+                            currentStep = .contactSync  // Skip to photo analysis
                         }
                     }) {
                         Text("Skip")
@@ -243,7 +243,7 @@ struct LocationSettingScreen: View {
         // Navigate to next screen after a short delay to allow sync
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             withAnimation {
-                currentStep = .photoAnalysis  // Skip to photo analysis
+                currentStep = .contactSync  // Skip to photo analysis
                 isLoading = false
             }
         }

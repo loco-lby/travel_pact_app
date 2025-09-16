@@ -7,27 +7,46 @@ import PostgREST
 
 class SupabaseManager {
     static let shared = SupabaseManager()
-    
+
     let client: SupabaseClient
     let supabaseURL: String
-    
+    private var authStateTask: Task<Void, Never>?
+
+    // Callback for auth state changes
+    var onAuthStateChange: ((Session?) -> Void)?
+
     private init() {
         // Hardcoded values for development - in production these should come from environment variables
         let supabaseURLString = "https://bmhqpuppfvqxyclnkhsw.supabase.co"
         let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtaHFwdXBwZnZxeHljbG5raHN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxOTQ4MjAsImV4cCI6MjA3Mjc3MDgyMH0.5S4EL-2FTEn2cquAAFXqMU-pTTtITlW2ADRJy3x6EzQ"
-        
+
         self.supabaseURL = supabaseURLString
-        
+
         guard let url = URL(string: supabaseURLString) else {
             fatalError("Invalid Supabase URL: \(supabaseURLString)")
         }
-        
+
         self.client = SupabaseClient(
             supabaseURL: url,
             supabaseKey: supabaseAnonKey
         )
-        
+
         print("SupabaseManager initialized with URL: \(supabaseURLString)")
+        setupAuthStateListener()
+    }
+
+    private func setupAuthStateListener() {
+        authStateTask = Task {
+            for await authState in auth.authStateChanges {
+                await MainActor.run {
+                    onAuthStateChange?(authState.session)
+                }
+            }
+        }
+    }
+
+    deinit {
+        authStateTask?.cancel()
     }
     
     var auth: AuthClient {

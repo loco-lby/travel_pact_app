@@ -1,0 +1,49 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project TravelPact.xcodeproj -scheme TravelPact -destination "platform=iOS Simulator,name=iPhone 15 Pro" build
+
+User defaults from command line:
+    IDEPackageSupportUseBuiltinSCM = YES
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  swift-concurrency-extras: https://github.com/pointfreeco/swift-concurrency-extras @ 1.3.2
+  swift-asn1: https://github.com/apple/swift-asn1.git @ 1.4.0
+  swift-clocks: https://github.com/pointfreeco/swift-clocks @ 1.0.6
+  swift-http-types: https://github.com/apple/swift-http-types.git @ 1.4.0
+  swift-crypto: https://github.com/apple/swift-crypto.git @ 3.15.0
+  Supabase: https://github.com/supabase-community/supabase-swift @ 2.31.2
+  xctest-dynamic-overlay: https://github.com/pointfreeco/xctest-dynamic-overlay @ 1.6.1
+
+2025-09-16 14:06:03.103 xcodebuild[25557:57586933] Writing error result bundle to /var/folders/7w/_46b0x2d25q6vjpkm7yffj2r0000gn/T/ResultBundle_2025-16-09_14-06-0003.xcresult
+xcodebuild: error: Unable to find a device matching the provided destination specifier:
+		{ platform:iOS Simulator, OS:latest, name:iPhone 15 Pro }
+
+	The requested device could not be found because no available devices matched the request.
+
+	Available destinations for the "TravelPact" scheme:
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device }
+		{ platform:iOS Simulator, id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder, name:Any iOS Simulator Device }
+		{ platform:iOS Simulator, id:63D6E8FC-021F-48D8-839F-3504ABA1D455, OS:18.3.1, name:iPad (10th generation) }
+		{ platform:iOS Simulator, id:63D6E8FC-021F-48D8-839F-3504ABA1D455, OS:18.3.1, name:iPad (10th generation) }
+		{ platform:iOS Simulator, id:CF8C4746-6B32-4FA0-8FFA-51B17A0A63E1, OS:18.3.1, name:iPad Air 11-inch (M2) }
+		{ platform:iOS Simulator, id:CF8C4746-6B32-4FA0-8FFA-51B17A0A63E1, OS:18.3.1, name:iPad Air 11-inch (M2) }
+		{ platform:iOS Simulator, id:EA21EC03-6FD8-4820-B4E7-0D5C5F0B053E, OS:18.3.1, name:iPad Air 13-inch (M2) }
+		{ platform:iOS Simulator, id:EA21EC03-6FD8-4820-B4E7-0D5C5F0B053E, OS:18.3.1, name:iPad Air 13-inch (M2) }
+		{ platform:iOS Simulator, id:19C4EA45-BBE7-4E46-B775-4412C8D34CA2, OS:18.3.1, name:iPad Pro 11-inch (M4) }
+		{ platform:iOS Simulator, id:19C4EA45-BBE7-4E46-B775-4412C8D34CA2, OS:18.3.1, name:iPad Pro 11-inch (M4) }
+		{ platform:iOS Simulator, id:0CF69D80-D7E2-430E-84D6-0E6C21D11154, OS:18.3.1, name:iPad Pro 13-inch (M4) }
+		{ platform:iOS Simulator, id:0CF69D80-D7E2-430E-84D6-0E6C21D11154, OS:18.3.1, name:iPad Pro 13-inch (M4) }
+		{ platform:iOS Simulator, id:BB60F251-4D49-417E-9CEC-62EE7302FA4B, OS:18.3.1, name:iPad mini (A17 Pro) }
+		{ platform:iOS Simulator, id:BB60F251-4D49-417E-9CEC-62EE7302FA4B, OS:18.3.1, name:iPad mini (A17 Pro) }
+		{ platform:iOS Simulator, id:C91F468F-5943-4047-8156-C1887053CC38, OS:18.3.1, name:iPhone 16 }
+		{ platform:iOS Simulator, id:C91F468F-5943-4047-8156-C1887053CC38, OS:18.3.1, name:iPhone 16 }
+		{ platform:iOS Simulator, id:4AB4FDBB-A16B-4329-9BBE-5964166683E5, OS:18.3.1, name:iPhone 16 Plus }
+		{ platform:iOS Simulator, id:4AB4FDBB-A16B-4329-9BBE-5964166683E5, OS:18.3.1, name:iPhone 16 Plus }
+		{ platform:iOS Simulator, id:9EF848CD-A111-45E2-9890-B9576DEC8223, OS:18.3.1, name:iPhone 16 Pro }
+		{ platform:iOS Simulator, id:9EF848CD-A111-45E2-9890-B9576DEC8223, OS:18.3.1, name:iPhone 16 Pro }
+		{ platform:iOS Simulator, id:E295B98A-384A-4D14-B9B4-D905CF4A5720, OS:18.3.1, name:iPhone 16 Pro Max }
+		{ platform:iOS Simulator, id:E295B98A-384A-4D14-B9B4-D905CF4A5720, OS:18.3.1, name:iPhone 16 Pro Max }
+		{ platform:iOS Simulator, id:A71A70E0-79DD-4147-B3A3-A05FF51C84AF, OS:18.3.1, name:iPhone SE (3rd generation) }
+		{ platform:iOS Simulator, id:A71A70E0-79DD-4147-B3A3-A05FF51C84AF, OS:18.3.1, name:iPhone SE (3rd generation) }

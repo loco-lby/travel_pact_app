@@ -237,7 +237,8 @@ struct SkillsGiftsScreen: View {
                 
                 await MainActor.run {
                     withAnimation {
-                        currentStep = .photoAnalysis
+                        // MVP: Skip photo analysis, go to next step
+                        currentStep = .contactSync
                         isLoading = false
                     }
                 }

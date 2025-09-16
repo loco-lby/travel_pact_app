@@ -56,11 +56,13 @@ struct LocationSearchView: View {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.gray)
                             
-                            TextField("Search location...", text: $searchText)
-                                .textFieldStyle(PlainTextFieldStyle())
-                                .onSubmit {
-                                    searchLocation()
-                                }
+                            LiquidGlassTextField(
+                                placeholder: "Search location...",
+                                text: $searchText
+                            )
+                            .onSubmit {
+                                searchLocation()
+                            }
                             
                             if isSearching {
                                 ProgressView()
@@ -75,9 +77,7 @@ struct LocationSearchView: View {
                             }
                         }
                         .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(12)
-                        .shadow(radius: 5)
+                        .liquidGlass(cornerRadius: 12)
                         .padding()
                         
                         if !selectedLocationName.isEmpty {
@@ -90,7 +90,7 @@ struct LocationSearchView: View {
                             }
                             .padding(.horizontal)
                             .padding(.vertical, 8)
-                            .background(Color(.secondarySystemBackground))
+                            .liquidGlass(cornerRadius: 8)
                         }
                     }
                     .background(Color(.systemBackground).opacity(0.95))
@@ -116,16 +116,9 @@ struct LocationSearchView: View {
                         // Select Location Button
                         Button(action: selectCurrentLocation) {
                             Text("Select This Location")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.blue)
-                                )
-                                .shadow(radius: 5)
                         }
+                        .buttonStyle(LiquidGlassButtonStyle(isPrimary: true))
                         .padding(.horizontal)
                         .padding(.bottom, 30)
                     }

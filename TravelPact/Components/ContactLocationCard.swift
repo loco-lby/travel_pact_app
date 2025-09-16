@@ -16,9 +16,9 @@ struct ContactLocationCard: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header
+            // Header with enhanced status display
             HStack {
-                // Contact icon/initials
+                // Contact icon/initials with status indicator
                 ZStack {
                     Circle()
                         .fill(
@@ -39,17 +39,47 @@ struct ContactLocationCard: View {
                     Text(contact.initials)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
+                    
+                    // Location assignment status indicator
+                    Circle()
+                        .fill(Color.green)
+                        .frame(width: 14, height: 14)
+                        .overlay(
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 8, weight: .bold))
+                                .foregroundColor(.white)
+                        )
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white, lineWidth: 1.5)
+                        )
+                        .offset(x: 14, y: -14)
                 }
                 .frame(width: 40, height: 40)
                 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(contact.name)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
                     
-                    Text(locationName)
-                        .font(.system(size: 14))
-                        .foregroundColor(.white.opacity(0.7))
+                    // Location status with icon
+                    HStack(spacing: 6) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 12))
+                            .foregroundColor(.green)
+                        
+                        Text("Location: \(locationName)")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.white.opacity(0.85))
+                    }
+                    
+                    // Address details if available
+                    if let address = locationData.address, address != locationName {
+                        Text(address)
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.5))
+                            .lineLimit(1)
+                    }
                 }
                 
                 Spacer()
@@ -71,16 +101,16 @@ struct ContactLocationCard: View {
             Divider()
                 .background(Color.white.opacity(0.2))
             
-            // Action buttons
-            HStack(spacing: 16) {
-                // Message button
+            // Enhanced action buttons
+            VStack(spacing: 12) {
+                // Location management button
                 Button(action: {
-                    sendMessage()
+                    // TODO: Show location change interface
                 }) {
                     HStack(spacing: 8) {
-                        Image(systemName: "message.fill")
+                        Image(systemName: "location.circle")
                             .font(.system(size: 16))
-                        Text("Message")
+                        Text("Change Location")
                             .font(.system(size: 14, weight: .medium))
                     }
                     .foregroundColor(.white)
@@ -88,7 +118,7 @@ struct ContactLocationCard: View {
                     .padding(.vertical, 10)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.blue.opacity(0.8))
+                            .fill(Color.orange.opacity(0.7))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white.opacity(0.3), lineWidth: 1)
@@ -96,28 +126,77 @@ struct ContactLocationCard: View {
                     )
                 }
                 
-                // Call button
-                if let phone = contact.phoneNumber {
+                // Communication buttons
+                HStack(spacing: 12) {
+                    // Message button
                     Button(action: {
-                        callContact(phone: phone)
+                        sendMessage()
                     }) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "phone.fill")
-                                .font(.system(size: 16))
-                            Text("Call")
-                                .font(.system(size: 14, weight: .medium))
+                        HStack(spacing: 6) {
+                            Image(systemName: "message.fill")
+                                .font(.system(size: 14))
+                            Text("Message")
+                                .font(.system(size: 13, weight: .medium))
                         }
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 8)
                         .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.green.opacity(0.8))
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.blue.opacity(0.7))
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                 )
                         )
+                    }
+                    
+                    // Call button
+                    if let phone = contact.phoneNumber {
+                        Button(action: {
+                            callContact(phone: phone)
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "phone.fill")
+                                    .font(.system(size: 14))
+                                Text("Call")
+                                    .font(.system(size: 13, weight: .medium))
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.green.opacity(0.7))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                        }
+                    } else {
+                        // Invite button if no phone number
+                        Button(action: {
+                            inviteToTravelPact()
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "paperplane.fill")
+                                    .font(.system(size: 14))
+                                Text("Invite")
+                                    .font(.system(size: 13, weight: .medium))
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.purple.opacity(0.7))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                        }
                     }
                 }
             }
@@ -139,6 +218,17 @@ struct ContactLocationCard: View {
         // Try to open Messages app with pre-filled recipient
         if let phone = contact.phoneNumber {
             let sms = "sms:\(phone)"
+            if let url = URL(string: sms), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+        }
+    }
+
+    private func inviteToTravelPact() {
+        // Send invite SMS if phone number is available
+        if let phone = contact.phoneNumber {
+            let message = "Hey! I've added you to my travel map on TravelPact. Join to stay in touch and share your adventures: https://travelpact.io"
+            let sms = "sms:\(phone)&body=\(message.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
             if let url = URL(string: sms), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url)
             }

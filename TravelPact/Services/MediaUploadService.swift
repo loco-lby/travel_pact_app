@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import Foundation
 import SwiftUI
 import PhotosUI
@@ -263,3 +265,4 @@ struct PhotoMetadata {
     let location: CLLocation?
     let cameraInfo: String?
 }
+*/

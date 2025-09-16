@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import SwiftUI
 
 struct MediaAnalysisBubble: View {
@@ -136,3 +138,4 @@ struct MediaAnalysisBubble: View {
         MediaAnalysisBubble()
     }
 }
+*/

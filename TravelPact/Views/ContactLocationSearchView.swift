@@ -5,14 +5,56 @@ struct ContactLocationSearchView: View {
     let contact: TravelPactContact
     @Binding var isPresented: Bool
     var onLocationAssigned: ((CLLocationCoordinate2D) -> Void)?
-    
+
     @State private var searchText = ""
     @State private var searchResults: [MKMapItem] = []
     @State private var selectedLocation: MKMapItem?
     @State private var isSearching = false
     @State private var searchTask: Task<Void, Never>?
     @StateObject private var locationManager = ContactLocationManager.shared
+    @StateObject private var waypointsManager = WaypointsManager()
     @FocusState private var searchFieldFocused: Bool
+
+    // Get recent waypoint cities from user's travel history
+    private var recentCities: [(String, CLLocationCoordinate2D)] {
+        var cities: [(String, CLLocationCoordinate2D)] = []
+        var addedCities = Set<String>()
+
+        // Get unique cities from user's waypoints, most recent first
+        for waypoint in waypointsManager.waypoints.reversed() {
+            // Use city name if available, otherwise use waypoint name
+            let cityName = waypoint.city ?? waypoint.name
+            if !addedCities.contains(cityName),
+               cities.count < 8,
+               let coordinate = waypoint.coordinate {
+                addedCities.insert(cityName)
+                cities.append((cityName, coordinate))
+            }
+        }
+
+        // If user has fewer than 8 waypoints, add some popular fallbacks
+        if cities.count < 8 {
+            let fallbackCities = [
+                ("New York", CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060)),
+                ("London", CLLocationCoordinate2D(latitude: 51.5074, longitude: -0.1278)),
+                ("Paris", CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522)),
+                ("Tokyo", CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503)),
+                ("Los Angeles", CLLocationCoordinate2D(latitude: 34.0522, longitude: -118.2437)),
+                ("Berlin", CLLocationCoordinate2D(latitude: 52.5200, longitude: 13.4050)),
+                ("Sydney", CLLocationCoordinate2D(latitude: -33.8688, longitude: 151.2093)),
+                ("Singapore", CLLocationCoordinate2D(latitude: 1.3521, longitude: 103.8198))
+            ]
+
+            for city in fallbackCities {
+                if !addedCities.contains(city.0) && cities.count < 8 {
+                    cities.append(city)
+                    addedCities.insert(city.0)
+                }
+            }
+        }
+
+        return cities
+    }
     
     var body: some View {
         VStack(spacing: 12) {
@@ -80,6 +122,66 @@ struct ContactLocationSearchView: View {
                     )
             )
             
+            // Recent/Popular cities (show when not searching and no results)
+            if searchText.isEmpty && searchResults.isEmpty && !isSearching {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(waypointsManager.waypoints.isEmpty ? "Popular Cities" : "Recent Locations")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.8))
+                        .padding(.horizontal, 4)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 2), spacing: 6) {
+                        ForEach(recentCities, id: \.0) { city in
+                            Button(action: {
+                                assignPopularCity(coordinate: city.1, name: city.0)
+                            }) {
+                                HStack(spacing: 8) {
+                                    Circle()
+                                        .fill(Color.orange.opacity(0.15))
+                                        .frame(width: 24, height: 24)
+                                        .overlay(
+                                            Image(systemName: "location.fill")
+                                                .font(.system(size: 10))
+                                                .foregroundColor(.orange)
+                                        )
+                                    
+                                    Text(city.0)
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundColor(.white)
+                                    
+                                    Spacer()
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.white.opacity(0.05))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
+                                        )
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                }
+                .padding(.horizontal, 4)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
+                        )
+                )
+                .transition(.asymmetric(
+                    insertion: .scale(scale: 0.95).combined(with: .opacity),
+                    removal: .scale(scale: 0.95).combined(with: .opacity)
+                ))
+            }
+            
             // Search results (only show when there are results)
             if !searchResults.isEmpty || isSearching {
                 ScrollView {
@@ -121,6 +223,10 @@ struct ContactLocationSearchView: View {
                                 .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
                         )
                 )
+                .transition(.asymmetric(
+                    insertion: .scale(scale: 0.95).combined(with: .opacity),
+                    removal: .scale(scale: 0.95).combined(with: .opacity)
+                ))
             }
         }
         .padding(.horizontal, 20)
@@ -130,6 +236,8 @@ struct ContactLocationSearchView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 searchFieldFocused = true
             }
+            // Load waypoints for recent cities
+            waypointsManager.loadWaypoints()
         }
     }
     
@@ -185,6 +293,28 @@ struct ContactLocationSearchView: View {
         
         // Navigate to the assigned location
         onLocationAssigned?(mapItem.placemark.coordinate)
+        
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            isPresented = false
+        }
+    }
+    
+    private func assignPopularCity(coordinate: CLLocationCoordinate2D, name: String) {
+        let locationData = ContactLocationData(
+            locationName: name,
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude,
+            address: name,
+            city: name,
+            country: nil
+        )
+        
+        if let contactId = contact.contactIdentifier {
+            locationManager.assignLocation(to: contactId, location: locationData)
+        }
+        
+        // Navigate to the assigned location
+        onLocationAssigned?(coordinate)
         
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
             isPresented = false

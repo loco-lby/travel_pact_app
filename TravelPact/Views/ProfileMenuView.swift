@@ -7,8 +7,12 @@ struct ProfileMenuView: View {
     @State private var userPhone: String = ""
     @State private var showingLogoutAlert = false
     @State private var isLoadingProfile = true
-    
+    @State private var showingSettings = false
+    @State private var showingPrivacy = false
+    @State private var showingHelp = false
+
     var body: some View {
+        NavigationView {
         VStack {
             // Drag indicator
             Capsule()
@@ -77,8 +81,8 @@ struct ProfileMenuView: View {
                             icon: "gearshape.fill",
                             title: "Settings",
                             action: {
-                                // TODO: Navigate to settings
-                                dismiss()
+                                print("Settings tapped")
+                                showingSettings = true
                             }
                         )
                         
@@ -91,8 +95,7 @@ struct ProfileMenuView: View {
                             icon: "lock.fill",
                             title: "Privacy",
                             action: {
-                                // TODO: Navigate to privacy settings
-                                dismiss()
+                                showingPrivacy = true
                             }
                         )
                         
@@ -105,8 +108,7 @@ struct ProfileMenuView: View {
                             icon: "questionmark.circle.fill",
                             title: "Help",
                             action: {
-                                // TODO: Navigate to help
-                                dismiss()
+                                showingHelp = true
                             }
                         )
                         
@@ -126,19 +128,14 @@ struct ProfileMenuView: View {
                         .padding(.bottom, 8)
                     }
             }
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                    )
-            )
+            .liquidGlass(cornerRadius: 20)
             .padding(.horizontal, 20)
             .padding(.vertical, 20)
             .shadow(color: .black.opacity(0.3), radius: 20)
             
             Spacer()
+        }
+        .navigationBarHidden(true)
         }
         .alert("Sign Out", isPresented: $showingLogoutAlert) {
             Button("Cancel", role: .cancel) { }
@@ -150,6 +147,15 @@ struct ProfileMenuView: View {
         }
         .onAppear {
             loadUserProfile()
+        }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
+        }
+        .sheet(isPresented: $showingPrivacy) {
+            PrivacyView()
+        }
+        .sheet(isPresented: $showingHelp) {
+            HelpView()
         }
     }
     

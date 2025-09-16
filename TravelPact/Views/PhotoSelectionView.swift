@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import SwiftUI
 import Photos
 
@@ -290,3 +292,4 @@ struct PhotoThumbnail: View {
         }
     }
 }
+*/

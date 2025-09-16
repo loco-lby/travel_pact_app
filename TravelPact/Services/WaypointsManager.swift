@@ -64,10 +64,9 @@ class WaypointsManager: ObservableObject {
     @Published var errorMessage = ""
     
     func loadWaypoints() {
-        isLoading = true
-        errorMessage = ""
-        
-        Task {
+        Task { @MainActor in
+            isLoading = true
+            errorMessage = ""
             do {
                 let session = try await SupabaseManager.shared.auth.session
                 
@@ -123,18 +122,14 @@ class WaypointsManager: ObservableObject {
                 
                 let loadedWaypoints = try decoder.decode([Waypoint].self, from: response.data)
                 
-                await MainActor.run {
-                    self.waypoints = loadedWaypoints
-                    self.isLoading = false
-                }
+                self.waypoints = loadedWaypoints
+                self.isLoading = false
                 
-                print("✅ Loaded \(loadedWaypoints.count) waypoints")
+                print("✅ Loaded \(loadedWaypoints.count) bookmarks")
             } catch {
-                await MainActor.run {
-                    self.errorMessage = "Failed to load waypoints: \(error.localizedDescription)"
-                    self.isLoading = false
-                }
-                print("❌ Error loading waypoints: \(error)")
+                self.errorMessage = "Failed to load bookmarks: \(error.localizedDescription)"
+                self.isLoading = false
+                print("❌ Error loading bookmarks: \(error)")
             }
         }
     }
@@ -167,9 +162,9 @@ class WaypointsManager: ObservableObject {
                     }
                 }
                 
-                print("✅ Updated waypoint: \(waypoint.name)")
+                print("✅ Updated bookmark: \(waypoint.name)")
             } catch {
-                print("❌ Error updating waypoint: \(error)")
+                print("❌ Error updating bookmark: \(error)")
             }
         }
     }
@@ -185,18 +180,18 @@ class WaypointsManager: ObservableObject {
             .eq("user_id", value: session.user.id.uuidString)
             .execute()
         
-        // Update sequence orders for remaining waypoints in database
+        // Update sequence orders for remaining bookmarks in database
         await reorderWaypoints(afterDeletion: waypoint.sequenceOrder, routeId: waypoint.routeId)
         
         // Remove from local array immediately
         await MainActor.run {
             self.waypoints.removeAll { $0.id == waypoint.id }
             // Update local sequence orders
-            for index in waypoints.indices {
-                if waypoints[index].routeId == waypoint.routeId && waypoints[index].sequenceOrder > waypoint.sequenceOrder {
+            for index in self.waypoints.indices {
+                if self.waypoints[index].routeId == waypoint.routeId && self.waypoints[index].sequenceOrder > waypoint.sequenceOrder {
                     // Create new waypoint with updated sequence order
-                    let wp = waypoints[index]
-                    waypoints[index] = Waypoint(
+                    let wp = self.waypoints[index]
+                    self.waypoints[index] = Waypoint(
                         id: wp.id,
                         routeId: wp.routeId,
                         userId: wp.userId,
@@ -218,16 +213,18 @@ class WaypointsManager: ObservableObject {
             }
         }
         
-        print("✅ Deleted waypoint: \(waypoint.name)")
+        print("✅ Deleted bookmark: \(waypoint.name)")
         
         // Reload to sync with database
-        loadWaypoints()
+        await MainActor.run {
+            loadWaypoints()
+        }
     }
     
     func splitRouteAtWaypoint(_ waypoint: Waypoint) async throws {
         let session = try await SupabaseManager.shared.auth.session
         
-        // Get waypoints before and after the split point
+        // Get bookmarks before and after the split point
         let waypointsBefore = waypoints.filter { 
             $0.routeId == waypoint.routeId && $0.sequenceOrder < waypoint.sequenceOrder 
         }
@@ -236,8 +233,8 @@ class WaypointsManager: ObservableObject {
             $0.routeId == waypoint.routeId && $0.sequenceOrder > waypoint.sequenceOrder 
         }
         
-        // Only split if there are waypoints both before AND after this one
-        // This creates two distinct routes
+        // Only split if there are bookmarks both before AND after this one
+        // This creates two distinct paths
         if !waypointsBefore.isEmpty && !waypointsAfter.isEmpty {
             // Create a new route for waypoints after the split point
             struct RouteInsert: Codable {
@@ -275,7 +272,7 @@ class WaypointsManager: ObservableObject {
                 throw WaypointError.routeCreationFailed
             }
             
-            // Update waypoints after the split point to belong to the new route
+            // Update bookmarks after the split point to belong to the new route
             // Reset their sequence orders starting from 0
             for (index, wp) in waypointsAfter.enumerated() {
                 struct WaypointRouteUpdate: Codable {
@@ -297,24 +294,24 @@ class WaypointsManager: ObservableObject {
                     .execute()
             }
             
-            print("✅ Split route at waypoint: \(waypoint.name)")
-            print("   - Original route now has \(waypointsBefore.count) waypoints")
-            print("   - New route has \(waypointsAfter.count) waypoints")
+            print("✅ Split route at bookmark: \(waypoint.name)")
+            print("   - Original route now has \(waypointsBefore.count) bookmarks")
+            print("   - New route has \(waypointsAfter.count) bookmarks")
         } else if waypointsAfter.isEmpty {
-            // If no waypoints after, just delete the last waypoint
-            print("⚠️ No waypoints after \(waypoint.name), just deleting it")
+            // If no bookmarks after, just delete the last bookmark
+            print("⚠️ No bookmarks after \(waypoint.name), just deleting it")
         } else if waypointsBefore.isEmpty {
-            // If no waypoints before, just delete the first waypoint
-            print("⚠️ No waypoints before \(waypoint.name), just deleting it")
+            // If no bookmarks before, just delete the first bookmark
+            print("⚠️ No bookmarks before \(waypoint.name), just deleting it")
         }
         
-        // Delete the waypoint at the split point
-        // This separates the two routes completely
+        // Delete the bookmark at the split point
+        // This separates the two paths completely
         try await deleteWaypoint(waypoint)
     }
     
     private func reorderWaypoints(afterDeletion deletedOrder: Int, routeId: UUID) async {
-        // Update sequence orders for waypoints after the deleted one
+        // Update sequence orders for bookmarks after the deleted one
         let waypointsToUpdate = waypoints.filter { 
             $0.routeId == routeId && $0.sequenceOrder > deletedOrder 
         }
@@ -337,7 +334,7 @@ class WaypointsManager: ObservableObject {
                     .eq("id", value: waypoint.id.uuidString)
                     .execute()
             } catch {
-                print("❌ Error reordering waypoint: \(error)")
+                print("❌ Error reordering bookmark: \(error)")
             }
         }
     }
@@ -348,14 +345,14 @@ class WaypointsManager: ObservableObject {
         // Get user's main route or create one if it doesn't exist
         let routeId = try await getOrCreateMainRoute(for: session.user.id)
         
-        // Determine the sequence order for the new waypoint
+        // Determine the sequence order for the new bookmark
         let maxSequence = waypoints
             .filter { $0.routeId == routeId }
             .map { $0.sequenceOrder }
             .max() ?? -1
         let newSequenceOrder = maxSequence + 1
         
-        // Create location data - using same location for both actual and known
+        // Create location data - using same location for both actual and known (simplified for bookmarks)
         let locationData = LocationData(
             latitude: location.latitude,
             longitude: location.longitude,
@@ -364,7 +361,7 @@ class WaypointsManager: ObservableObject {
             country: nil
         )
         
-        // Prepare waypoint data for insertion
+        // Prepare bookmark data for insertion
         struct WaypointInsert: Codable {
             let id: String
             let route_id: String
@@ -399,7 +396,7 @@ class WaypointsManager: ObservableObject {
             .insert(waypointInsert)
             .execute()
         
-        // Create the waypoint object
+        // Create the bookmark object
         let newWaypoint = Waypoint(
             id: newWaypointId,
             routeId: routeId,
@@ -425,7 +422,7 @@ class WaypointsManager: ObservableObject {
             self.waypoints.sort { $0.sequenceOrder < $1.sequenceOrder }
         }
         
-        print("✅ Created waypoint: \(name) at sequence \(newSequenceOrder)")
+        print("✅ Created bookmark: \(name) at sequence \(newSequenceOrder)")
         
         return newWaypoint
     }

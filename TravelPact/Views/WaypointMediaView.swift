@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import SwiftUI
 import PhotosUI
 import Supabase
@@ -546,3 +548,4 @@ struct SlideshowView: View {
         }
     }
 }
+*/

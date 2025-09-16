@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import SwiftUI
 import Photos
 
@@ -242,3 +244,4 @@ struct PhotoAnalysisView: View {
         onboardingViewModel.completeOnboarding()
     }
 }
+*/

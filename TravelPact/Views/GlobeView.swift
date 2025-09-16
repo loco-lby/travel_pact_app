@@ -37,11 +37,26 @@ struct GlobeView: View {
     @State private var showLocationDeniedAlert = false
     @State private var showProfileMenu = false
     @State private var selectedContact: TravelPactContact?
+    @State private var selectedContactGroup: ContactLocationGroup?
+    
+    // City animation states
+    @State private var showCityAnimation = false
+    @State private var cityAnimationName = ""
+    @State private var showConfetti = false
 
     var body: some View {
         ZStack {
             mapView
             floatingUILayer
+            
+            // City animation overlay
+            if showCityAnimation {
+                CityAnimationOverlay(
+                    cityName: cityAnimationName,
+                    showConfetti: $showConfetti,
+                    isShowing: $showCityAnimation
+                )
+            }
         }
         .preferredColorScheme(.dark)  // Force dark mode for better globe visibility
         .sheet(isPresented: $showLocationUpdate) {
@@ -70,25 +85,28 @@ struct GlobeView: View {
                 }
             }
         }
+        // MVP: Waypoint media sheet temporarily disabled
+        /*
         .sheet(isPresented: $showWaypointMedia) {
             if let waypoint = selectedWaypoint {
                 WaypointMediaView(waypoint: waypoint)
             }
         }
+        */
         .fullScreenCover(isPresented: $showContactGlobe) {
             if let contact = contactForGlobe {
                 ContactGlobeView(contact: contact)
             }
         }
-        .alert("Delete Waypoint", isPresented: $showDeleteAlert) {
-            Button("Delete Waypoint Only", role: .destructive) {
+.alert("Delete Bookmark", isPresented: $showDeleteAlert) {
+            Button("Delete Bookmark Only", role: .destructive) {
                 if let waypoint = waypointToDelete {
-                    deleteWaypoint(waypoint, splitRoute: false)
+                    deleteBookmark(waypoint, splitRoute: false)
                 }
             }
             Button("Split Route Here", role: .destructive) {
                 if let waypoint = waypointToDelete {
-                    deleteWaypoint(waypoint, splitRoute: true)
+                    deleteBookmark(waypoint, splitRoute: true)
                 }
             }
             Button("Cancel", role: .cancel) {
@@ -97,7 +115,7 @@ struct GlobeView: View {
         } message: {
             if let waypoint = waypointToDelete {
                 Text(
-                    "Delete '\(waypoint.name)'? This will remove it from your route. Choose 'Split Route' to create two separate routes at this point."
+                    "Delete '\(waypoint.name)'? This will remove it from your path. Choose 'Split Route' to create two separate paths at this point."
                 )
             }
         }
@@ -110,7 +128,7 @@ struct GlobeView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text(
-                "Please enable location services in Settings to add waypoints at your current location."
+                "Please enable location services in Settings to add bookmarks at your current location."
             )
         }
         .alert("Location Services Disabled", isPresented: $showLocationDeniedAlert) {
@@ -146,8 +164,8 @@ struct GlobeView: View {
             }
         }
 
-        // Route paths between waypoints
-        // Group waypoints by route ID and draw separate polylines for each route
+        // Path connections between bookmarks
+        // Group bookmarks by route ID and draw separate polylines for each path
         let groupedWaypoints = Dictionary(grouping: waypointsManager.waypoints, by: { $0.routeId })
 
         ForEach(Array(groupedWaypoints.keys), id: \.self) { routeId in
@@ -171,11 +189,11 @@ struct GlobeView: View {
             }
         }
 
-        // Waypoint markers
+        // Bookmark markers
         ForEach(waypointsManager.waypoints) { waypoint in
             if let coordinate = waypoint.coordinate {
                 Annotation("", coordinate: coordinate) {
-                    WaypointMarker(
+                    BookmarkMarker(
                         waypoint: waypoint,
                         isSelected: selectedWaypoint?.id == waypoint.id
                     )
@@ -210,23 +228,26 @@ struct GlobeView: View {
             }
         }
 
-        // Contact location markers (for non-user contacts with assigned locations)
-        ForEach(contactService.contacts.filter { !$0.hasAccount && $0.contactIdentifier != nil }) {
-            contact in
-            if let contactId = contact.contactIdentifier,
-                let locationData = contactLocationManager.getLocation(for: contactId)
-            {
-                Annotation("", coordinate: locationData.coordinate) {
-                    ContactLocationMarker(
-                        contact: contact,
-                        locationData: locationData
-                    )
+        // Grouped contact location markers (for non-user contacts with assigned locations)
+        let nonUserContacts = contactService.contacts.filter { !$0.hasAccount && $0.contactIdentifier != nil }
+        let contactGroups = contactLocationManager.getContactGroups(for: nonUserContacts)
+        
+        ForEach(contactGroups.indices, id: \.self) { index in
+            let group = contactGroups[index]
+            Annotation("", coordinate: group.locationData.coordinate) {
+                GroupedContactLocationMarker(contactGroup: group)
                     .onTapGesture {
                         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                            selectedContact = selectedContact?.id == contact.id ? nil : contact
+                            // For grouped contacts, select the first contact in the group for display
+                            if let firstContact = group.contacts.first {
+                                selectedContact = selectedContact?.id == firstContact.id ? nil : firstContact
+                                // Compare coordinates manually since CLLocationCoordinate2D doesn't conform to Equatable
+                                let isSameLocation = selectedContactGroup?.locationData.coordinate.latitude == group.locationData.coordinate.latitude && 
+                                                    selectedContactGroup?.locationData.coordinate.longitude == group.locationData.coordinate.longitude
+                                selectedContactGroup = isSameLocation ? nil : group
+                            }
                         }
                     }
-                }
             }
         }
     }
@@ -272,13 +293,15 @@ struct GlobeView: View {
                             icon: "plus",
                             size: .small
                         ) {
-                            addWaypointAtCurrentLocation()
+                            addBookmarkAtCurrentLocation()
                         }
                         
-                        // Media analysis bubble
+                        // MVP: Media analysis bubble temporarily disabled
+                        /*
                         MediaAnalysisBubble(onWaypointsAdded: {
                             waypointsManager.loadWaypoints()
                         })
+                        */
                     }
                     .padding(.leading)
 
@@ -348,9 +371,9 @@ struct GlobeView: View {
                             ))
                     }
 
-                    // Selected Waypoint Card
+                    // Selected Bookmark Card
                     if let waypoint = selectedWaypoint {
-                        WaypointInfoCard(
+                        BookmarkInfoCard(
                             waypoint: waypoint,
                             onClose: {
                                 withAnimation {
@@ -363,10 +386,13 @@ struct GlobeView: View {
                             onDelete: {
                                 waypointToDelete = waypoint
                                 showDeleteAlert = true
-                            },
-                            onMedia: {
+                            }
+                            // MVP: Media callback temporarily disabled
+                            /*
+                            ,onMedia: {
                                 showWaypointMedia = true
                             }
+                            */
                         )
                         .padding(.horizontal, 24)
                         .transition(
@@ -394,11 +420,56 @@ struct GlobeView: View {
                             ))
                     }
 
-                    // Selected Contact Card (non-user contacts)
-                    if let contact = selectedContact,
+                    // Selected Contact Card (non-user contacts) - Single or Grouped
+                    if let contactGroup = selectedContactGroup {
+                        // Show grouped contact card
+                        if contactGroup.count > 1 {
+                            GroupedContactInfoCard(
+                                contactGroup: contactGroup,
+                                onClose: {
+                                    withAnimation {
+                                        selectedContactGroup = nil
+                                        selectedContact = nil
+                                    }
+                                },
+                                onContactSelected: { contact in
+                                    // Switch to individual contact view
+                                    withAnimation {
+                                        selectedContact = contact
+                                        selectedContactGroup = nil
+                                    }
+                                }
+                            )
+                            .padding(.horizontal, 24)
+                            .transition(
+                                .asymmetric(
+                                    insertion: .scale(scale: 0.8).combined(with: .opacity),
+                                    removal: .scale(scale: 0.8).combined(with: .opacity)
+                                ))
+                        } else if let contact = contactGroup.contacts.first {
+                            // Single contact in group - show regular contact card
+                            ContactLocationCard(
+                                contact: contact,
+                                locationData: contactGroup.locationData,
+                                onClose: {
+                                    withAnimation {
+                                        selectedContact = nil
+                                        selectedContactGroup = nil
+                                    }
+                                }
+                            )
+                            .padding(.horizontal, 24)
+                            .transition(
+                                .asymmetric(
+                                    insertion: .scale(scale: 0.8).combined(with: .opacity),
+                                    removal: .scale(scale: 0.8).combined(with: .opacity)
+                                ))
+                        }
+                    } else if let contact = selectedContact,
                         let contactId = contact.contactIdentifier,
                         let locationData = contactLocationManager.getLocation(for: contactId)
                     {
+                        // Individual contact card (legacy path)
                         ContactLocationCard(
                             contact: contact,
                             locationData: locationData,
@@ -417,16 +488,63 @@ struct GlobeView: View {
                     }
                 }
 
-                // Contact Carousel positioned at bottom
+                // Contact Carousel positioned at bottom - MORE PROMINENT
                 VStack {
                     Spacer()
+                    
+                    // Contacts section header
+                    HStack {
+                        Text("Contacts")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 8)
+                    
+                    // Enhanced contact carousel with glass background
                     ContactCarousel(
                         showContactGlobe: $showContactGlobe,
                         contactForGlobe: $contactForGlobe,
                         contactLocationToNavigate: $contactLocationToNavigate,
                         showAddConnection: $showAddConnection
                     )
-                    .padding(.bottom, 20)  // Add some padding from bottom edge
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(.ultraThinMaterial)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 24)
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color.white.opacity(0.08),
+                                                Color.white.opacity(0.02),
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 24)
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [
+                                                Color.white.opacity(0.25),
+                                                Color.white.opacity(0.05),
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 0.8
+                                    )
+                            )
+                    )
+                    .padding(.horizontal, 12)
+                    .shadow(color: .black.opacity(0.2), radius: 15, x: 0, y: 8)
+                    .padding(.bottom, 30)  // Add more padding from bottom edge
                 }
             }
         }
@@ -453,10 +571,12 @@ struct GlobeView: View {
             // Refresh current location to ensure we have the latest
             locationManager.refreshCurrentLocation()
 
-            // Load media for waypoints when they're loaded
+            // MVP: Media loading temporarily disabled
+            /*
             Task {
                 await MediaService.shared.loadMediaForWaypoints(waypointsManager.waypoints)
             }
+            */
 
             // Animate route paths after waypoints load
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -475,10 +595,12 @@ struct GlobeView: View {
             }
         }
         .onChange(of: waypointsManager.waypoints) { _, newWaypoints in
-            // Load media for new waypoints
+            // MVP: Media loading temporarily disabled
+            /*
             Task {
                 await MediaService.shared.loadMediaForWaypoints(newWaypoints)
             }
+            */
 
             // Re-animate when waypoints change
             routePathAnimation = 0
@@ -587,7 +709,7 @@ struct GlobeView: View {
         )
     }
 
-    private func deleteWaypoint(_ waypoint: Waypoint, splitRoute: Bool) {
+    private func deleteBookmark(_ waypoint: Waypoint, splitRoute: Bool) {
         Task {
             do {
                 if splitRoute {
@@ -604,12 +726,26 @@ struct GlobeView: View {
                     // Note: loadWaypoints is called automatically by the manager after deletion
                 }
             } catch {
-                print("Error deleting waypoint: \(error)")
+                print("Error deleting bookmark: \(error)")
             }
         }
     }
 
-    private func addWaypointAtCurrentLocation() {
+    private func showCityAnimationWithConfetti(cityName: String) {
+        cityAnimationName = cityName
+        showCityAnimation = true
+        showConfetti = true
+        
+        // Hide animation after 3-5 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            withAnimation(.easeOut(duration: 0.5)) {
+                showCityAnimation = false
+                showConfetti = false
+            }
+        }
+    }
+    
+    private func addBookmarkAtCurrentLocation() {
         // Check location permission first
         switch locationManager.currentAuthorizationStatus {
         case .notDetermined:
@@ -617,7 +753,7 @@ struct GlobeView: View {
             locationManager.requestLocationPermission { granted in
                 if granted {
                     // Try again after permission granted
-                    self.addWaypointAtCurrentLocation()
+                    self.addBookmarkAtCurrentLocation()
                 } else {
                     self.showLocationDeniedAlert = true
                 }
@@ -636,7 +772,7 @@ struct GlobeView: View {
             do {
                 // Get current location
                 guard let currentLocation = locationManager.actualLocation else {
-                    print("📍 No current location available for waypoint creation")
+                    print("📍 No current location available for bookmark creation")
                     // Try to start location updates if not already started
                     await MainActor.run {
                         showLocationPermissionAlert = true
@@ -645,17 +781,17 @@ struct GlobeView: View {
                 }
 
                 print(
-                    "📍 Creating waypoint at current location: \(currentLocation.coordinate.latitude), \(currentLocation.coordinate.longitude)"
+                    "📍 Creating bookmark at current location: \(currentLocation.coordinate.latitude), \(currentLocation.coordinate.longitude)"
                 )
 
-                // Generate waypoint name based on current location and date
+                // Generate bookmark name based on current location and date
                 let formatter = DateFormatter()
                 formatter.dateFormat = "MMM d, yyyy"
                 let dateString = formatter.string(from: Date())
 
                 // Get city name from reverse geocoding
                 let geocoder = CLGeocoder()
-                var waypointName = "Waypoint - \(dateString)"
+                var waypointName = "Bookmark - \(dateString)"
 
                 do {
                     let placemarks = try await geocoder.reverseGeocodeLocation(currentLocation)
@@ -667,17 +803,17 @@ struct GlobeView: View {
                     print("Geocoding error: \(error)")
                 }
 
-                // Create waypoint at actual location
+                // Create bookmark at actual location
                 let newWaypoint = try await waypointsManager.createWaypoint(
                     name: waypointName,
                     location: currentLocation.coordinate
                 )
 
                 await MainActor.run {
-                    // Select the newly created waypoint
+                    // Select the newly created bookmark
                     selectedWaypoint = newWaypoint
 
-                    // Center map on the new waypoint
+                    // Center map on the new bookmark
                     if let coordinate = newWaypoint.coordinate {
                         withAnimation(.interpolatingSpring(stiffness: 80, damping: 15)) {
                             cameraPosition = .camera(
@@ -691,11 +827,11 @@ struct GlobeView: View {
                         }
                     }
 
-                    // Show the waypoint details for editing
-                    showWaypointDetails = true
+                    // Show city animation instead of edit view
+                    showCityAnimationWithConfetti(cityName: waypointName.components(separatedBy: " - ").first ?? "New Location")
                 }
             } catch {
-                print("Error creating waypoint: \(error)")
+                print("Error creating bookmark: \(error)")
             }
         }
     }
@@ -1005,6 +1141,15 @@ struct ConnectionInfoCard: View {
     let connection: Connection
     let onClose: () -> Void
 
+    private func inviteToTravelPact(phone: String?) {
+        guard let phone = phone else { return }
+        let message = "Hey! I've added you to my travel map on TravelPact. Join to stay in touch and share your adventures: https://travelpact.io"
+        let sms = "sms:\(phone)&body=\(message.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+        if let url = URL(string: sms), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
@@ -1055,7 +1200,9 @@ struct ConnectionInfoCard: View {
             }
 
             if !connection.hasAccount {
-                Button(action: {}) {
+                Button(action: {
+                    inviteToTravelPact(phone: connection.phone)
+                }) {
                     HStack {
                         Image(systemName: "paperplane.fill")
                             .font(.system(size: 12))
@@ -1114,10 +1261,12 @@ struct ConnectionInfoCard: View {
     }
 }
 
-// MARK: - Waypoint Marker
-struct WaypointMarker: View {
+// MARK: - Bookmark Marker
+struct BookmarkMarker: View {
     let waypoint: Waypoint
     let isSelected: Bool
+    // MVP: Media service temporarily disabled
+    /*
     @StateObject private var mediaService = MediaService.shared
     @State private var thumbnailImage: UIImage?
 
@@ -1128,9 +1277,12 @@ struct WaypointMarker: View {
     var thumbnailURL: String? {
         mediaService.waypointThumbnails[waypoint.id]
     }
+    */
 
     var body: some View {
         ZStack {
+            // MVP: Media thumbnail temporarily disabled
+            /*
             if mediaCount > 0 && thumbnailURL != nil {
                 // Media thumbnail marker
                 ZStack(alignment: .topTrailing) {
@@ -1205,7 +1357,54 @@ struct WaypointMarker: View {
                     }
                 }
             } else {
+            */
                 // Default waypoint marker (no media)
+                ZStack {
+                    // Outer ring with animation
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.blue.opacity(0.3),
+                                    Color.cyan.opacity(0.3),
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: isSelected ? 50 : 30, height: isSelected ? 50 : 30)
+                        .overlay(
+                            Circle()
+                                .stroke(
+                                    LinearGradient(
+                                        colors: [.white.opacity(0.8), .white.opacity(0.3)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    lineWidth: 2
+                                )
+                        )
+
+                    // Inner dot
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [.blue, .cyan],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: isSelected ? 20 : 12, height: isSelected ? 20 : 12)
+                        .shadow(color: .blue.opacity(0.6), radius: 6, x: 0, y: 2)
+
+                    // Pin icon
+                    Image(systemName: "mappin")
+                        .font(.system(size: isSelected ? 12 : 8, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            // MVP: Always use default marker style for now
+            if true {
+                // Default bookmark marker (no media)
                 ZStack {
                     // Outer ring with animation
                     Circle()
@@ -1252,21 +1451,138 @@ struct WaypointMarker: View {
             }
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: mediaCount)
+        // MVP: Media count animation temporarily disabled
+        //.animation(.spring(response: 0.3, dampingFraction: 0.7), value: mediaCount)
+        // MVP: Media loading temporarily disabled
+        /*
         .task {
             await mediaService.loadMediaCount(for: waypoint.id)
             await mediaService.loadThumbnail(for: waypoint.id)
         }
+        */
     }
 }
 
-// MARK: - Waypoint Info Card
-struct WaypointInfoCard: View {
+// MARK: - City Animation Overlay
+struct CityAnimationOverlay: View {
+    let cityName: String
+    @Binding var showConfetti: Bool
+    @Binding var isShowing: Bool
+    @State private var animationScale: CGFloat = 0.5
+    @State private var animationOpacity: Double = 0
+    @State private var confettiPieces: [CityConfettiPiece] = []
+    
+    var body: some View {
+        ZStack {
+            // Semi-transparent background
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .opacity(isShowing ? 1 : 0)
+            
+            // City name animation
+            VStack(spacing: 8) {
+                Text("You are in")
+                    .font(.system(size: 24, weight: .regular, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.white.opacity(0.9), .white.opacity(0.7)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                
+                Text("\(cityName)!")
+                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.white, .white.opacity(0.9)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .shadow(color: .blue.opacity(0.5), radius: 20)
+                    .shadow(color: .black.opacity(0.3), radius: 10)
+            }
+            .multilineTextAlignment(.center)
+            .scaleEffect(animationScale)
+            .opacity(animationOpacity)
+            
+            // Confetti animation
+            if showConfetti {
+                ForEach(confettiPieces) { piece in
+                    CityConfettiView(piece: piece)
+                }
+            }
+        }
+        .onAppear {
+            // Generate confetti pieces
+            confettiPieces = (0..<50).map { _ in
+                CityConfettiPiece(
+                    id: UUID(),
+                    color: [Color.blue, Color.purple, Color.cyan, Color.pink, Color.yellow, Color.green].randomElement()!,
+                    x: CGFloat.random(in: -200...200),
+                    y: CGFloat.random(in: -400...(-200)),
+                    rotation: Double.random(in: 0...360),
+                    scale: CGFloat.random(in: 0.5...1.5)
+                )
+            }
+            
+            // Animate city name
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                animationScale = 1.0
+                animationOpacity = 1.0
+            }
+            
+            // Fade out animation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                withAnimation(.easeOut(duration: 1)) {
+                    animationOpacity = 0
+                }
+            }
+        }
+    }
+}
+
+struct CityConfettiPiece: Identifiable {
+    let id: UUID
+    let color: Color
+    let x: CGFloat
+    let y: CGFloat
+    let rotation: Double
+    let scale: CGFloat
+}
+
+struct CityConfettiView: View {
+    let piece: CityConfettiPiece
+    @State private var offsetY: CGFloat = 0
+    @State private var opacity: Double = 1
+    @State private var rotationAngle: Double = 0
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: 2)
+            .fill(piece.color)
+            .frame(width: 10 * piece.scale, height: 20 * piece.scale)
+            .rotationEffect(.degrees(piece.rotation + rotationAngle))
+            .offset(x: piece.x, y: piece.y + offsetY)
+            .opacity(opacity)
+            .onAppear {
+                withAnimation(.easeOut(duration: 3)) {
+                    offsetY = 800
+                    opacity = 0
+                    rotationAngle = Double.random(in: 180...720)
+                }
+            }
+    }
+}
+
+// MARK: - Bookmark Info Card
+struct BookmarkInfoCard: View {
     let waypoint: Waypoint
     let onClose: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
-    let onMedia: () -> Void
+    // MVP: Media callback temporarily disabled
+    // let onMedia: () -> Void
 
     var dateRangeText: String {
         let formatter = DateFormatter()
@@ -1342,6 +1658,8 @@ struct WaypointInfoCard: View {
 
             // Action buttons
             HStack(spacing: 12) {
+                // MVP: Media button temporarily disabled
+                /*
                 Button(action: onMedia) {
                     HStack {
                         Image(systemName: "photo.stack")
@@ -1357,6 +1675,7 @@ struct WaypointInfoCard: View {
                             .fill(Color.blue.opacity(0.3))
                     )
                 }
+                */
 
                 Button(action: onEdit) {
                     HStack {

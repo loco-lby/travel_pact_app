@@ -1,5 +1,21 @@
-import SwiftUI
 import CoreLocation
+import SwiftUI
+import UIKit
+
+// MARK: - Adaptive Layout
+struct AdaptiveLayout {
+    static var contactBubbleSize: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 80 : 64
+    }
+
+    static var contactGridColumns: Int {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return UIScreen.main.bounds.width > UIScreen.main.bounds.height ? 6 : 4
+        } else {
+            return 3
+        }
+    }
+}
 
 // MARK: - Contact Carousel
 struct ContactCarousel: View {
@@ -9,21 +25,27 @@ struct ContactCarousel: View {
     @State private var selectedContact: TravelPactContact?
     @State private var showLocationSearch = false
     @State private var contactForLocationAssignment: TravelPactContact?
+    @State private var showingContactMenu = false
+    @State private var contactForMenu: TravelPactContact?
     @Binding var showContactGlobe: Bool
     @Binding var contactForGlobe: TravelPactContact?
     @Binding var contactLocationToNavigate: CoordinateWrapper?
     @Binding var showAddConnection: Bool
-    
+
     private let maxVisibleContacts = 6
-    
+
     var visibleContacts: [TravelPactContact] {
-        Array(contactService.contacts.prefix(maxVisibleContacts))
+        // Only show favorite contacts in the carousel
+        let favoriteContacts = contactService.contacts.filter { contact in
+            guard let contactId = contact.contactIdentifier else { return false }
+            return locationManager.isFavorite(contactId)
+        }.sorted { contact1, contact2 in
+            contact1.displayName < contact2.displayName
+        }
+        return Array(favoriteContacts.prefix(maxVisibleContacts))
     }
-    
-    var remainingCount: Int {
-        max(0, contactService.contacts.count - maxVisibleContacts)
-    }
-    
+
+
     var body: some View {
         VStack(spacing: 12) {
             // Location search bar (appears above contacts when active)
@@ -45,42 +67,18 @@ struct ContactCarousel: View {
                         contactLocationToNavigate = CoordinateWrapper(coordinate: coordinate)
                     }
                 )
-                .transition(.asymmetric(
-                    insertion: .move(edge: .top).combined(with: .opacity),
-                    removal: .move(edge: .top).combined(with: .opacity)
-                ))
+                .transition(
+                    .asymmetric(
+                        insertion: .move(edge: .top).combined(with: .opacity),
+                        removal: .move(edge: .top).combined(with: .opacity)
+                    ))
             }
-            
+
             // Contact carousel
             VStack(spacing: 0) {
-                if !contactService.contacts.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            // Add contact button at the beginning
-                            AddContactBubble {
-                                showAddConnection = true
-                            }
-                            
-                            // Contact bubbles
-                            ForEach(visibleContacts) { contact in
-                                ContactBubble(contact: contact) {
-                                    handleContactTap(contact)
-                                }
-                            }
-                            
-                            // "More" button if there are additional contacts
-                            if remainingCount > 0 {
-                                MoreContactsBubble(count: remainingCount) {
-                                    showFullGrid = true
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 20)
-                    }
-                    .frame(height: 80)
-                } else if contactService.isLoading {
+                if contactService.isLoading {
                     LoadingContactCarousel()
-                } else {
+                } else if contactService.contacts.isEmpty {
                     EmptyContactCarousel {
                         Task {
                             if await contactService.requestContactsPermission() {
@@ -88,6 +86,31 @@ struct ContactCarousel: View {
                             }
                         }
                     }
+                } else {
+                    // Always show carousel with Add Contact and View All buttons
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            // Add contact button at the beginning
+                            AddContactBubble {
+                                showAddConnection = true
+                            }
+
+                            // Favorite contact bubbles (only favorites appear in carousel)
+                            ForEach(visibleContacts) { contact in
+                                ContactBubble(contact: contact) {
+                                    handleContactTap(contact)
+                                }
+                            }
+
+                            // "View All Contacts" button
+                            MoreContactsBubble(count: contactService.contacts.count) {
+                                showFullGrid = true
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)  // Add vertical padding to prevent cutoff
+                    }
+                    .frame(height: 96)  // Increase height to accommodate padding
                 }
             }
         }
@@ -101,6 +124,61 @@ struct ContactCarousel: View {
                 }
             )
         }
+        .confirmationDialog(
+            contactForMenu?.name ?? "Contact",
+            isPresented: $showingContactMenu,
+            titleVisibility: .visible
+        ) {
+            if let contact = contactForMenu {
+                // Add to Favorites button
+                if let contactId = contact.contactIdentifier {
+                    Button(locationManager.isFavorite(contactId) ? "Remove from Favorites" : "Add to Favorites") {
+                        locationManager.toggleFavorite(for: contactId)
+                    }
+                }
+
+                // Invite to TravelPact button
+                Button("Invite to TravelPact") {
+                    inviteToTravelPact(contact)
+                }
+
+                // Location management
+                if let contactId = contact.contactIdentifier,
+                   let locationData = locationManager.getLocation(for: contactId) {
+                    // Navigate to location
+                    Button("Go to Location") {
+                        contactLocationToNavigate = CoordinateWrapper(coordinate: locationData.coordinate)
+                    }
+
+                    // Change location
+                    Button("Change Location") {
+                        contactForLocationAssignment = contact
+                        showLocationSearch = true
+                    }
+                } else {
+                    // Assign location
+                    Button("Assign Location") {
+                        contactForLocationAssignment = contact
+                        showLocationSearch = true
+                    }
+                }
+
+                // Call if phone number available
+                if let phone = contact.phoneNumber {
+                    Button("Call") {
+                        callContact(phone: phone)
+                    }
+                }
+
+                Button("Cancel", role: .cancel) {}
+            }
+        } message: {
+            if let contact = contactForMenu {
+                if !contact.hasAccount {
+                    Text("This contact hasn't joined TravelPact yet")
+                }
+            }
+        }
         .task {
             // Auto-sync contacts on appear if we have permission
             if contactService.hasPermission && contactService.contacts.isEmpty {
@@ -108,22 +186,40 @@ struct ContactCarousel: View {
             }
         }
     }
-    
+
     private func handleContactTap(_ contact: TravelPactContact) {
         selectedContact = contact
-        
+
         if contact.hasAccount {
             // Open their globe view
             contactForGlobe = contact
             showContactGlobe = true
-        } else if let contactId = contact.contactIdentifier,
-                  let locationData = locationManager.getLocation(for: contactId) {
-            // Navigate to their assigned location on the map
-            contactLocationToNavigate = CoordinateWrapper(coordinate: locationData.coordinate)
         } else {
-            // Show location assignment popup for non-user contacts without location
-            contactForLocationAssignment = contact
-            showLocationSearch = true
+            // Show menu for non-app users
+            contactForMenu = contact
+            showingContactMenu = true
+        }
+    }
+
+    private func inviteToTravelPact(_ contact: TravelPactContact) {
+        guard let phone = contact.phoneNumber else { return }
+
+        let message = "Hey! I've added you to my travel map on TravelPact. Join to stay connected and share your adventures: https://travelpact.io"
+        let sms = "sms:\(phone)&body=\(message.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+
+        if let url = URL(string: sms), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        }
+    }
+
+    private func callContact(phone: String) {
+        let cleanedPhone = phone.replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "-", with: "")
+            .replacingOccurrences(of: "(", with: "")
+            .replacingOccurrences(of: ")", with: "")
+
+        if let url = URL(string: "tel://\(cleanedPhone)"), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
         }
     }
 }
@@ -133,12 +229,17 @@ struct ContactBubble: View {
     let contact: TravelPactContact
     let action: () -> Void
     @StateObject private var locationManager = ContactLocationManager.shared
-    
+
     private var hasAssignedLocation: Bool {
         guard let contactId = contact.contactIdentifier else { return false }
         return locationManager.getLocation(for: contactId) != nil
     }
-    
+
+    private var isFavorite: Bool {
+        guard let contactId = contact.contactIdentifier else { return false }
+        return locationManager.isFavorite(contactId)
+    }
+
     var body: some View {
         Button(action: action) {
             ZStack {
@@ -185,7 +286,24 @@ struct ContactBubble: View {
                         hasLocation: hasAssignedLocation
                     )
                 }
-                
+
+                // Favorite indicator (top priority)
+                if isFavorite {
+                    Circle()
+                        .fill(Color.pink)
+                        .frame(width: 16, height: 16)
+                        .overlay(
+                            Image(systemName: "heart.fill")
+                                .font(.system(size: 9))
+                                .foregroundColor(.white)
+                        )
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white, lineWidth: 2)
+                        )
+                        .offset(x: -22, y: -22)
+                }
+
                 // Online indicator for TravelPact users OR location indicator for non-users
                 if contact.hasAccount {
                     Circle()
@@ -223,7 +341,7 @@ struct ContactInitialsBubble: View {
     let initials: String
     let hasAccount: Bool
     var hasLocation: Bool = false
-    
+
     var bubbleGradient: LinearGradient {
         if hasAccount {
             // Purple gradient for TravelPact users
@@ -241,7 +359,7 @@ struct ContactInitialsBubble: View {
             )
         }
     }
-    
+
     var borderColors: [Color] {
         if hasAccount {
             // Blue/cyan for TravelPact users
@@ -254,7 +372,7 @@ struct ContactInitialsBubble: View {
             return [Color.white.opacity(0.5), Color.white.opacity(0.1)]
         }
     }
-    
+
     var borderWidth: CGFloat {
         if hasAccount || hasLocation {
             return 2
@@ -262,20 +380,20 @@ struct ContactInitialsBubble: View {
             return 1
         }
     }
-    
+
     var textColor: Color {
         hasAccount ? .white : .white
     }
-    
+
     var body: some View {
         ZStack {
             Circle()
                 .fill(bubbleGradient)
-                .frame(width: 64, height: 64)
+                .frame(width: AdaptiveLayout.contactBubbleSize, height: AdaptiveLayout.contactBubbleSize)
                 .background(
                     Circle()
                         .fill(.ultraThinMaterial)
-                        .frame(width: 64, height: 64)
+                        .frame(width: AdaptiveLayout.contactBubbleSize, height: AdaptiveLayout.contactBubbleSize)
                 )
                 .overlay(
                     Circle()
@@ -288,7 +406,7 @@ struct ContactInitialsBubble: View {
                             lineWidth: borderWidth
                         )
                 )
-            
+
             Text(initials.uppercased())
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .foregroundColor(textColor)
@@ -300,7 +418,7 @@ struct ContactInitialsBubble: View {
 struct MoreContactsBubble: View {
     let count: Int
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             ZStack {
@@ -329,7 +447,7 @@ struct MoreContactsBubble: View {
                                 lineWidth: 1
                             )
                     )
-                
+
                 Text("+\(count)")
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
@@ -342,44 +460,47 @@ struct MoreContactsBubble: View {
 // MARK: - Add Contact Bubble
 struct AddContactBubble: View {
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.15), Color.white.opacity(0.05)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 64, height: 64)
-                    .background(
+             ZStack {
                         Circle()
-                            .fill(.ultraThinMaterial)
-                            .frame(width: 64, height: 64)
-                    )
-                    .overlay(
-                        Circle()
-                            .stroke(
+                            .fill(
                                 LinearGradient(
-                                    colors: [Color.white.opacity(0.5), Color.white.opacity(0.1)],
+                                    colors: [Color.white.opacity(0.15), Color.white.opacity(0.05)],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1
+                                )
                             )
-                    )
-                
-                Image(systemName: "person.badge.plus")
-                    .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(.white.opacity(0.8))
+                            .frame(width: 64, height: 64)
+                            .background(
+                                Circle()
+                                    .fill(.ultraThinMaterial)
+                                    .frame(width: 64, height: 64)
+                            )
+                            .overlay(
+                                Circle()
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [Color.white.opacity(0.5), Color.white.opacity(0.1)],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 1
+                                        )
+                            )
+
+
+                     Image(systemName: "person.badge.plus")
+                             .font(.system(size: 20, weight: .medium))
+                             .foregroundColor(.white.opacity(0.8))
+
             }
         }
         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
 }
+
 
 // MARK: - Loading State
 struct LoadingContactCarousel: View {
@@ -404,7 +525,7 @@ struct LoadingContactCarousel: View {
 // MARK: - Empty State
 struct EmptyContactCarousel: View {
     let onSyncContacts: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 16) {
             Button(action: onSyncContacts) {
@@ -412,7 +533,7 @@ struct EmptyContactCarousel: View {
                     Image(systemName: "person.2.circle")
                         .font(.system(size: 24))
                         .foregroundColor(.white.opacity(0.8))
-                    
+
                     Text("Sync Contacts")
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                         .foregroundColor(.white)
@@ -426,7 +547,9 @@ struct EmptyContactCarousel: View {
                             Capsule()
                                 .fill(
                                     LinearGradient(
-                                        colors: [Color.white.opacity(0.15), Color.white.opacity(0.05)],
+                                        colors: [
+                                            Color.white.opacity(0.15), Color.white.opacity(0.05),
+                                        ],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
@@ -436,7 +559,9 @@ struct EmptyContactCarousel: View {
                             Capsule()
                                 .stroke(
                                     LinearGradient(
-                                        colors: [Color.white.opacity(0.5), Color.white.opacity(0.1)],
+                                        colors: [
+                                            Color.white.opacity(0.5), Color.white.opacity(0.1),
+                                        ],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     ),
@@ -446,7 +571,7 @@ struct EmptyContactCarousel: View {
                 )
             }
             .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
-            
+
             Text("Connect with friends who use TravelPact")
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(.white.opacity(0.6))
@@ -462,9 +587,27 @@ struct ContactGridView: View {
     let contacts: [TravelPactContact]
     let onContactSelected: (TravelPactContact) -> Void
     @Environment(\.dismiss) private var dismiss
-    
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
-    
+    @StateObject private var locationManager = ContactLocationManager.shared
+
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 16), count: AdaptiveLayout.contactGridColumns)
+    }
+
+    private var sortedContacts: [TravelPactContact] {
+        contacts.sorted { contact1, contact2 in
+            let isFavorite1 = contact1.contactIdentifier.map { locationManager.isFavorite($0) } ?? false
+            let isFavorite2 = contact2.contactIdentifier.map { locationManager.isFavorite($0) } ?? false
+
+            if isFavorite1 && !isFavorite2 {
+                return true
+            } else if !isFavorite1 && isFavorite2 {
+                return false
+            } else {
+                return contact1.displayName < contact2.displayName
+            }
+        }
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -476,10 +619,10 @@ struct ContactGridView: View {
                         Color.black.opacity(0.2)
                             .ignoresSafeArea()
                     )
-                
+
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(contacts) { contact in
+                        ForEach(sortedContacts) { contact in
                             ContactGridItem(contact: contact) {
                                 onContactSelected(contact)
                             }
@@ -508,12 +651,17 @@ struct ContactGridItem: View {
     let contact: TravelPactContact
     let action: () -> Void
     @StateObject private var locationManager = ContactLocationManager.shared
-    
+
     private var hasAssignedLocation: Bool {
         guard let contactId = contact.contactIdentifier else { return false }
         return locationManager.getLocation(for: contactId) != nil
     }
-    
+
+    private var isFavorite: Bool {
+        guard let contactId = contact.contactIdentifier else { return false }
+        return locationManager.isFavorite(contactId)
+    }
+
     var body: some View {
         Button(action: action) {
             VStack(spacing: 12) {
@@ -562,7 +710,24 @@ struct ContactGridItem: View {
                         )
                         .frame(width: 80, height: 80)
                     }
-                    
+
+                    // Favorite indicator (top priority)
+                    if isFavorite {
+                        Circle()
+                            .fill(Color.pink)
+                            .frame(width: 20, height: 20)
+                            .overlay(
+                                Image(systemName: "heart.fill")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.white)
+                            )
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.white, lineWidth: 2)
+                            )
+                            .offset(x: -28, y: -28)
+                    }
+
                     // Status indicator
                     if contact.hasAccount {
                         Circle()
@@ -590,16 +755,21 @@ struct ContactGridItem: View {
                             .offset(x: 28, y: -28)
                     }
                 }
-                
+
                 VStack(spacing: 4) {
                     Text(contact.displayName)
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                         .foregroundColor(.white)
                         .lineLimit(1)
-                    
-                    Text(contact.hasAccount ? "On TravelPact" : hasAssignedLocation ? "Location set" : "Invite to TravelPact")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundColor(contact.hasAccount ? .green : hasAssignedLocation ? .green : .orange)
+
+                    Text(
+                        contact.hasAccount
+                            ? "On TravelPact"
+                            : hasAssignedLocation ? "Location set" : "Invite to TravelPact"
+                    )
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundColor(
+                        contact.hasAccount ? .green : hasAssignedLocation ? .green : .orange)
                 }
             }
         }

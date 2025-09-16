@@ -62,7 +62,7 @@ struct LocationPermissionScreen: View {
                             .font(.system(size: 32, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                         
-                        Text("TravelPact tracks your journey and suggests waypoints when you travel")
+                        Text("TravelPact helps you create bookmarks and track locations of friends and family")
                             .font(.system(size: 18, weight: .regular, design: .rounded))
                             .foregroundColor(.white.opacity(0.8))
                             .multilineTextAlignment(.center)
@@ -75,15 +75,15 @@ struct LocationPermissionScreen: View {
                 // Features
                 VStack(spacing: 24) {
                     LocationFeature(
-                        icon: "mappin.circle",
-                        title: "Create Waypoints",
-                        description: "Mark memorable places on your journey"
+                        icon: "bookmark.circle.fill",
+                        title: "Create Bookmarks",
+                        description: "Save memorable places and locations"
                     )
                     
                     LocationFeature(
-                        icon: "location.north.line",
-                        title: "Smart Detection",
-                        description: "Detect when you travel to new places"
+                        icon: "person.2.circle.fill",
+                        title: "Track Contacts",
+                        description: "See where your friends and family are located"
                     )
                     
                     LocationFeature(

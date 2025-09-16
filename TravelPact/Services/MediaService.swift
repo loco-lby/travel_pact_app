@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import Foundation
 import SwiftUI
 import Supabase
@@ -144,3 +146,4 @@ class MediaService: ObservableObject {
         }
     }
 }
+*/

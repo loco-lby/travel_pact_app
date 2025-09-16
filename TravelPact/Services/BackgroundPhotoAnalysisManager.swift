@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import Foundation
 import SwiftUI
 import Photos
@@ -247,3 +249,4 @@ class BackgroundPhotoAnalysisManager: ObservableObject {
         return hasStartedAnalysis && !hasCompletedAnalysis && lastProcessedIndex > 0
     }
 }
+*/

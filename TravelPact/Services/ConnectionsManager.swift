@@ -7,6 +7,8 @@ struct Connection: Identifiable, Codable {
     let userId: UUID
     let connectionUserId: UUID?
     let name: String
+    let phone: String?
+    let photoPath: String?
     let assignedLocation: LocationData?
     let assignedLocationName: String?
     let actualKnownLocation: LocationData?
@@ -49,6 +51,8 @@ struct Connection: Identifiable, Codable {
         case userId = "user_id"
         case connectionUserId = "connection_user_id"
         case name
+        case phone
+        case photoPath = "photo_path"
         case assignedLocation = "assigned_location"
         case assignedLocationName = "assigned_location_name"
         case actualKnownLocation = "actual_known_location"
@@ -125,6 +129,8 @@ class ConnectionsManager: ObservableObject {
     
     func addConnection(
         name: String,
+        phone: String? = nil,
+        photoPath: String? = nil,
         location: CLLocationCoordinate2D?,
         locationName: String?,
         notes: String?
@@ -134,6 +140,8 @@ class ConnectionsManager: ObservableObject {
         struct ConnectionInsert: Codable {
             let user_id: String
             let name: String
+            let phone: String?
+            let photo_path: String?
             let assigned_location: LocationData?
             let assigned_location_name: String?
             let location_source: String?
@@ -158,6 +166,8 @@ class ConnectionsManager: ObservableObject {
         let connection = ConnectionInsert(
             user_id: session.user.id.uuidString,
             name: name,
+            phone: phone,
+            photo_path: photoPath,
             assigned_location: assignedLocationData,
             assigned_location_name: locationName,
             location_source: assignedLocationData != nil ? "assigned" : nil,

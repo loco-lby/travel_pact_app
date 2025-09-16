@@ -35,17 +35,8 @@ struct WaypointEditView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Background gradient
-                LinearGradient(
-                    colors: [
-                        Color.black,
-                        Color.blue.opacity(0.2),
-                        Color.cyan.opacity(0.2)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                // Background
+                AnimatedGradientBackground()
                 
                 ScrollView {
                     VStack(spacing: 24) {
@@ -86,11 +77,11 @@ struct WaypointEditView: View {
                         VStack(alignment: .leading, spacing: 20) {
                             // Name field
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Waypoint Name")
+                                Text("Bookmark Name")
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(.white.opacity(0.7))
                                 
-                                TextField("Enter waypoint name", text: $waypointName)
+                                TextField("Enter bookmark name", text: $waypointName)
                                     .textFieldStyle(GlassTextFieldStyle())
                             }
                             
@@ -122,7 +113,7 @@ struct WaypointEditView: View {
                             
                             // Notes field
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Notes")
+                                Text("Notes (Optional)")
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(.white.opacity(0.7))
                                 
@@ -138,7 +129,7 @@ struct WaypointEditView: View {
                                                     .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                             )
                                     )
-                                    .frame(minHeight: 100)
+                                    .frame(minHeight: 80)
                             }
                         }
                         .padding(.horizontal)
@@ -148,7 +139,7 @@ struct WaypointEditView: View {
                     .padding(.top)
                 }
             }
-            .navigationTitle("Edit Waypoint")
+            .navigationTitle("Edit Bookmark")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -171,13 +162,10 @@ struct WaypointEditView: View {
     }
     
     private func saveChanges() {
-        // Create updated waypoint with new name
-        var updatedWaypoint = waypoint
-        // Since Waypoint is a struct with let properties, we need to handle this differently
-        // For now, we'll just pass the waypoint back with the understanding that
-        // the manager will update the name in the database
+        // Create updated bookmark with new name and notes
+        // Since Waypoint is a struct with let properties, we need to create a new instance
         
-        // Create a new waypoint with updated values
+        // Create a new bookmark with updated values
         let updated = Waypoint(
             id: waypoint.id,
             routeId: waypoint.routeId,

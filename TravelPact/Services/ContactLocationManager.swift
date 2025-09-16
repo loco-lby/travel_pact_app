@@ -6,6 +6,7 @@ class ContactLocationManager: ObservableObject {
     static let shared = ContactLocationManager()
     
     @Published var contactLocations: [String: ContactLocationData] = [:]
+    @Published var favoriteContacts: Set<String> = []
     
     private lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ContactLocation")
@@ -19,6 +20,7 @@ class ContactLocationManager: ObservableObject {
     
     private init() {
         loadAllContactLocations()
+        loadFavorites()
     }
     
     // MARK: - Public Methods
@@ -87,6 +89,60 @@ class ContactLocationManager: ObservableObject {
         }
     }
     
+    // MARK: - Favorite Management
+    
+    func toggleFavorite(for contactIdentifier: String) {
+        if favoriteContacts.contains(contactIdentifier) {
+            favoriteContacts.remove(contactIdentifier)
+        } else {
+            favoriteContacts.insert(contactIdentifier)
+        }
+        saveFavorites()
+    }
+    
+    func isFavorite(_ contactIdentifier: String) -> Bool {
+        return favoriteContacts.contains(contactIdentifier)
+    }
+    
+    private func saveFavorites() {
+        UserDefaults.standard.set(Array(favoriteContacts), forKey: "favoriteContacts")
+    }
+    
+    private func loadFavorites() {
+        if let saved = UserDefaults.standard.array(forKey: "favoriteContacts") as? [String] {
+            favoriteContacts = Set(saved)
+        }
+    }
+    
+    func getContactGroups(for contacts: [TravelPactContact]) -> [ContactLocationGroup] {
+        // Group contacts by their location coordinates
+        var locationGroups: [String: ContactLocationGroup] = [:]
+        
+        for contact in contacts {
+            guard let contactId = contact.contactIdentifier,
+                  let locationData = contactLocations[contactId] else {
+                continue
+            }
+            
+            // Create a key for grouping (rounded coordinates to avoid floating point precision issues)
+            let roundedLat = round(locationData.latitude * 1000) / 1000
+            let roundedLng = round(locationData.longitude * 1000) / 1000
+            let locationKey = "\(roundedLat),\(roundedLng)"
+            
+            if var existingGroup = locationGroups[locationKey] {
+                existingGroup.contacts.append(contact)
+                locationGroups[locationKey] = existingGroup
+            } else {
+                locationGroups[locationKey] = ContactLocationGroup(
+                    locationData: locationData,
+                    contacts: [contact]
+                )
+            }
+        }
+        
+        return Array(locationGroups.values)
+    }
+    
     // MARK: - Private Methods
     
     private func loadAllContactLocations() {
@@ -122,6 +178,26 @@ class ContactLocationManager: ObservableObject {
             print("❌ Failed to load contact locations: \(error)")
         }
     }
+
+    // MARK: - Cache Management
+
+    func clearCache() {
+        // Clear in-memory cache
+        contactLocations.removeAll()
+
+        // Clear Core Data
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "ContactLocation")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+            print("✅ Contact location cache cleared")
+        } catch {
+            print("❌ Failed to clear contact location cache: \(error)")
+        }
+    }
 }
 
 // MARK: - Data Model
@@ -136,5 +212,22 @@ struct ContactLocationData: Codable {
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
+struct ContactLocationGroup {
+    let locationData: ContactLocationData
+    var contacts: [TravelPactContact]
+    
+    var count: Int {
+        contacts.count
+    }
+    
+    var displayName: String {
+        if count == 1 {
+            return contacts.first?.displayName ?? "Contact"
+        } else {
+            return "\(count) contacts"
+        }
     }
 }

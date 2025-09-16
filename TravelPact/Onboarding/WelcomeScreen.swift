@@ -23,7 +23,7 @@ struct WelcomeScreen: View {
             
             // Confetti layer
             if showConfetti {
-                ConfettiView()
+                OnboardingConfettiView()
                     .allowsHitTesting(false)
             }
             
@@ -50,7 +50,7 @@ struct WelcomeScreen: View {
                                 )
                             )
                         
-                        Text("Connect with locals through authentic exchanges")
+                        Text("Track locations of friends and family worldwide")
                             .font(.system(size: 18, weight: .medium, design: .rounded))
                             .foregroundColor(.white.opacity(0.8))
                             .multilineTextAlignment(.center)
@@ -66,21 +66,21 @@ struct WelcomeScreen: View {
                     VStack(spacing: 16) {
                         HStack(spacing: 40) {
                             FeatureIcon(
-                                icon: "person.2.fill",
-                                title: "Meet Locals",
+                                icon: "person.2.circle.fill",
+                                title: "Connect",
+                                color: .orange
+                            )
+                            
+                            FeatureIcon(
+                                icon: "location.circle.fill",
+                                title: "Track Locations",
                                 color: .blue
                             )
                             
                             FeatureIcon(
-                                icon: "gift.fill",
-                                title: "Share Skills",
-                                color: .blue
-                            )
-                            
-                            FeatureIcon(
-                                icon: "sparkles",
-                                title: "Create Magic",
-                                color: .pink
+                                icon: "bookmark.circle.fill",
+                                title: "Save Places",
+                                color: .green
                             )
                         }
                         .padding(.horizontal, 32)
@@ -101,7 +101,7 @@ struct WelcomeScreen: View {
                     .offset(y: animateElements ? 0 : 40)
                     .opacity(animateElements ? 1.0 : 0.0)
                     
-                    Text("Your journey starts with a single connection")
+                    Text("Keep track of everyone, everywhere")
                         .font(.system(size: 14, weight: .regular, design: .rounded))
                         .foregroundColor(.white.opacity(0.6))
                         .padding(.bottom, 20)

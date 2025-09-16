@@ -5,9 +5,7 @@ enum OnboardingStep {
     case welcome
     case phoneAuth
     case profileCreation
-    // case locationSetting  // Removed - can be part of profile or done later
-    // case skillsGifts      // Removed - optional, can be done in settings
-    case photoAnalysis
+    case contactSync
     case locationPermission
     case complete
 }
@@ -41,23 +39,8 @@ struct OnboardingCoordinator: View {
                         removal: .move(edge: .leading)
                     ))
                 
-            // Removed from flow - can be integrated into profile or settings
-            // case .locationSetting:
-            //     LocationSettingScreen(currentStep: $currentStep)
-            //         .transition(.asymmetric(
-            //             insertion: .move(edge: .trailing),
-            //             removal: .move(edge: .leading)
-            //         ))
-                
-            // case .skillsGifts:
-            //     SkillsGiftsScreen(currentStep: $currentStep)
-            //         .transition(.asymmetric(
-            //             insertion: .move(edge: .trailing),
-            //             removal: .move(edge: .leading)
-            //         ))
-                
-            case .photoAnalysis:
-                PhotoAnalysisViewWrapper(currentStep: $currentStep)
+            case .contactSync:
+                ContactSyncOnboardingScreen(currentStep: $currentStep)
                     .transition(.asymmetric(
                         insertion: .move(edge: .trailing),
                         removal: .move(edge: .leading)
@@ -94,8 +77,10 @@ struct OnboardingCoordinator: View {
 struct OnboardingCompleteScreen: View {
     @Binding var showMainApp: Bool
     @EnvironmentObject var authManager: AuthenticationManager
+    @StateObject private var onboardingViewModel = OnboardingViewModel()
     @State private var animateElements = false
     @State private var showConfetti = false
+    @State private var isCompletingOnboarding = false
     
     var body: some View {
         ZStack {
@@ -113,7 +98,7 @@ struct OnboardingCompleteScreen: View {
                 )
             
             if showConfetti {
-                ConfettiView()
+                OnboardingConfettiView()
                     .allowsHitTesting(false)
             }
             
@@ -155,7 +140,7 @@ struct OnboardingCompleteScreen: View {
                             .font(.system(size: 36, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                         
-                        Text("Your journey of authentic connections begins now")
+                        Text("Start tracking locations and creating bookmarks")
                             .font(.system(size: 18, weight: .regular, design: .rounded))
                             .foregroundColor(.white.opacity(0.8))
                             .multilineTextAlignment(.center)
@@ -177,14 +162,14 @@ struct OnboardingCompleteScreen: View {
                             )
                             
                             CompletionIcon(
-                                icon: "location.circle.fill",
-                                label: "Location Set",
-                                color: .blue
+                                icon: "person.2.circle",
+                                label: "Contacts Synced",
+                                color: .orange
                             )
                             
                             CompletionIcon(
-                                icon: "sparkles",
-                                label: "Skills Added",
+                                icon: "bookmark.circle.fill",
+                                label: "Ready to Track",
                                 color: .blue
                             )
                         }
@@ -193,9 +178,10 @@ struct OnboardingCompleteScreen: View {
                     .opacity(animateElements ? 1.0 : 0.0)
                     
                     Button(action: {
-                        // Mark profile as complete and show main app
-                        authManager.checkAuthStatus()
-                        showMainApp = true
+                        if !isCompletingOnboarding {
+                            isCompletingOnboarding = true
+                            onboardingViewModel.completeOnboarding()
+                        }
                     }) {
                         HStack {
                             Text("Start Exploring")
@@ -215,9 +201,17 @@ struct OnboardingCompleteScreen: View {
             withAnimation(.spring(response: 0.8, dampingFraction: 0.7).delay(0.2)) {
                 animateElements = true
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showConfetti = true
+            }
+        }
+        .onChange(of: onboardingViewModel.isComplete) { completed in
+            if completed {
+                // Onboarding has been marked complete in the database
+                // Refresh auth status and show main app
+                authManager.checkAuthStatus()
+                showMainApp = true
             }
         }
     }
@@ -241,8 +235,8 @@ struct CompletionIcon: View {
     }
 }
 
-struct ConfettiView: View {
-    @State private var confettiPieces: [ConfettiPiece] = []
+struct OnboardingConfettiView: View {
+    @State private var confettiPieces: [OnboardingConfettiPiece] = []
     
     var body: some View {
         GeometryReader { geometry in
@@ -259,7 +253,7 @@ struct ConfettiView: View {
     
     func createConfetti(in size: CGSize) {
         for _ in 0..<50 {
-            let piece = ConfettiPiece(
+            let piece = OnboardingConfettiPiece(
                 x: CGFloat.random(in: 0...size.width),
                 y: -20,
                 color: [Color.blue, Color.cyan, Color.green, Color.yellow, Color.orange].randomElement()!,
@@ -271,7 +265,7 @@ struct ConfettiView: View {
     }
 }
 
-struct ConfettiPiece: Identifiable {
+struct OnboardingConfettiPiece: Identifiable {
     let id = UUID()
     let x: CGFloat
     let y: CGFloat
@@ -281,7 +275,7 @@ struct ConfettiPiece: Identifiable {
 }
 
 struct ConfettiPieceView: View {
-    let piece: ConfettiPiece
+    let piece: OnboardingConfettiPiece
     @State private var yOffset: CGFloat = 0
     @State private var rotation = Double.random(in: 0...360)
     
@@ -300,21 +294,6 @@ struct ConfettiPieceView: View {
     }
 }
 
-// Wrapper for PhotoAnalysisView
-struct PhotoAnalysisViewWrapper: View {
-    @Binding var currentStep: OnboardingStep
-    @StateObject private var viewModel = OnboardingViewModel()
-    
-    var body: some View {
-        PhotoAnalysisView()
-            .environmentObject(viewModel)
-            .onReceive(viewModel.$isComplete) { isComplete in
-                if isComplete {
-                    currentStep = .locationPermission
-                }
-            }
-    }
-}
 
 // Simple OnboardingViewModel for coordination
 class OnboardingViewModel: ObservableObject {

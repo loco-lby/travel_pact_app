@@ -15,8 +15,8 @@ struct PhoneAuthScreen: View {
     
     var body: some View {
         ZStack {
-            // Globe background with blur overlay
-            OnboardingGlobeBackground(showWaypoints: false, waypoints: [])
+            // MVP: Use SpinningGlobeBackground instead of OnboardingGlobeBackground
+            SpinningGlobeBackground(spinSpeed: 15.0)
                 .ignoresSafeArea()
             
             // Blurred overlay

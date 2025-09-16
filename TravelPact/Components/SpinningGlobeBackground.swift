@@ -38,6 +38,8 @@ struct SpinningGlobeBackground: View {
     }
 }
 
+// MVP: OnboardingGlobeBackground temporarily disabled due to PhotoWaypoint dependency
+/*
 struct OnboardingGlobeBackground: View {
     let showWaypoints: Bool
     let waypoints: [PhotoWaypoint]
@@ -64,3 +66,4 @@ struct OnboardingGlobeBackground: View {
         .ignoresSafeArea()
     }
 }
+*/

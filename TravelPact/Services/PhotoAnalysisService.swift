@@ -1,3 +1,5 @@
+// MVP: Media features temporarily disabled for contact location focus
+/*
 import Foundation
 import Photos
 import CoreLocation
@@ -802,3 +804,4 @@ enum PhotoAnalysisError: LocalizedError {
         }
     }
 }
+*/

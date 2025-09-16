@@ -15,22 +15,44 @@ class AuthenticationManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var isCheckingAuth = true
     @Published var hasCompletedProfile = false
+
+    init() {
+        // Set up auth state change listener
+        SupabaseManager.shared.onAuthStateChange = { [weak self] session in
+            self?.handleAuthStateChange(session: session)
+        }
+    }
     
     func checkAuthStatus() {
         Task {
             do {
+                #if DEBUG
+                print("🔍 Checking authentication status...")
+                #endif
+
+                // Try to get the current session - this should handle persistence automatically
                 let session = try await SupabaseManager.shared.auth.session
+
+                #if DEBUG
+                print("✅ Found active session for user: \(session.user.id)")
+                #endif
+
                 let userId = session.user.id
-                
-                // Check if profile exists
+
+                // Check if profile exists and onboarding is completed
                 let profileExists = await checkProfileExists(userId: userId)
-                
+
                 await MainActor.run {
                     isAuthenticated = true
                     hasCompletedProfile = profileExists
                     isCheckingAuth = false
                 }
+
             } catch {
+                #if DEBUG
+                print("❌ No valid session found: \(error)")
+                #endif
+
                 await MainActor.run {
                     isAuthenticated = false
                     hasCompletedProfile = false
@@ -39,7 +61,33 @@ class AuthenticationManager: ObservableObject {
             }
         }
     }
-    
+
+    private func handleAuthStateChange(session: Session?) {
+        Task {
+            #if DEBUG
+            print("🔄 Auth state changed - Session: \(session != nil ? "Present" : "Nil")")
+            #endif
+
+            if let session = session {
+                // User is authenticated, check profile
+                let profileExists = await checkProfileExists(userId: session.user.id)
+
+                await MainActor.run {
+                    isAuthenticated = true
+                    hasCompletedProfile = profileExists
+                    isCheckingAuth = false
+                }
+            } else {
+                // User is not authenticated
+                await MainActor.run {
+                    isAuthenticated = false
+                    hasCompletedProfile = false
+                    isCheckingAuth = false
+                }
+            }
+        }
+    }
+
     private func checkProfileExists(userId: UUID) async -> Bool {
         do {
             let response = try await SupabaseManager.shared.client
@@ -122,8 +170,9 @@ struct TravelPactApp: App {
     @StateObject private var locationManager = LocationPrivacyManager.shared
     
     init() {
+        // MVP: Media features temporarily disabled for contact location focus
         // Initialize the photo analysis manager early to check for incomplete analysis
-        _ = BackgroundPhotoAnalysisManager.shared
+        // _ = BackgroundPhotoAnalysisManager.shared
     }
     
     var body: some Scene {
@@ -132,7 +181,7 @@ struct TravelPactApp: App {
                 if authManager.isCheckingAuth {
                     LaunchScreen()
                 } else if authManager.isAuthenticated && authManager.hasCompletedProfile {
-                    GlobeView()
+                    MainTabView()
                         .environmentObject(authManager)
                 } else {
                     OnboardingCoordinator()
@@ -140,6 +189,8 @@ struct TravelPactApp: App {
                 }
             }
             .onAppear {
+                // Only trigger initial auth check on app launch
+                // Subsequent auth state changes will be handled by the auth state listener
                 authManager.checkAuthStatus()
             }
         }

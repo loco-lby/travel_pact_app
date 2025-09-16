@@ -19,7 +19,8 @@ struct ProfileCreationScreen: View {
     var body: some View {
         ZStack {
             // Globe background with blur overlay
-            OnboardingGlobeBackground(showWaypoints: false, waypoints: [])
+            // MVP: Use SpinningGlobeBackground instead of OnboardingGlobeBackground
+            SpinningGlobeBackground(spinSpeed: 15.0)
                 .ignoresSafeArea()
             
             // Blurred overlay
@@ -283,7 +284,7 @@ struct ProfileCreationScreen: View {
                 // Don't set hasCompletedProfile yet - onboarding isn't done
                 await MainActor.run {
                     withAnimation {
-                        currentStep = .photoAnalysis  // Skip location and skills steps
+                        currentStep = .locationPermission  // MVP: Skip photo analysis, go straight to location permission
                     }
                     isLoading = false
                 }
@@ -343,7 +344,7 @@ struct ProfileCreationScreen: View {
         
         // Navigate to next screen
         withAnimation {
-            currentStep = .photoAnalysis  // Skip location and skills steps
+            currentStep = .contactSync  // Go to contact sync before photo analysis
         }
     }
 }

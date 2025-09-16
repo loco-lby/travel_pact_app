@@ -1,3 +1,5 @@
+// MVP: WaypointReviewView temporarily disabled (photo analysis feature)
+/*
 import SwiftUI
 import MapKit
 import CoreLocation
@@ -5,7 +7,8 @@ import Photos
 
 struct WaypointReviewView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var analysisManager = BackgroundPhotoAnalysisManager.shared
+    // MVP: Photo analysis manager temporarily disabled
+    // @ObservedObject var analysisManager = BackgroundPhotoAnalysisManager.shared
     @State private var selectedWaypoints: Set<UUID> = []
     @State private var isSyncing = false
     @State private var syncError: String?
@@ -22,7 +25,8 @@ struct WaypointReviewView: View {
     }
     
     private var sortedWaypoints: [PhotoWaypoint] {
-        let waypoints = analysisManager.pendingWaypoints
+        // MVP: Return empty array since photo analysis is disabled
+        let waypoints: [PhotoWaypoint] = [] // analysisManager.pendingWaypoints
         
         // Filter by search
         let filtered = searchText.isEmpty ? waypoints : waypoints.filter { waypoint in
@@ -88,30 +92,33 @@ struct WaypointReviewView: View {
                 .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Progress indicator at top if analyzing
+                    // MVP: Progress indicator temporarily disabled
+                    /*
                     if analysisManager.isAnalyzing, let progress = analysisManager.progress {
                         AnalysisProgressBar(progress: progress)
                             .padding()
                             .background(.ultraThinMaterial)
                     }
+                    */
                     
-                    // Show empty state if no waypoints and not analyzing
-                    if analysisManager.pendingWaypoints.isEmpty && !analysisManager.isAnalyzing {
+                    // MVP: Always show empty state since photo analysis is disabled
+                    // if analysisManager.pendingWaypoints.isEmpty && !analysisManager.isAnalyzing {
+                    if true {
                         Spacer()
                         EmptyWaypointView(
-                            hasIncompleteAnalysis: analysisManager.hasIncompleteAnalysis(),
+                            hasIncompleteAnalysis: false, // analysisManager.hasIncompleteAnalysis(),
                             onStartAnalysis: {
                                 showPhotoSelection = true
                             }
                         )
                         Spacer()
-                    } else if !analysisManager.pendingWaypoints.isEmpty {
+                    } else if false { // !analysisManager.pendingWaypoints.isEmpty
                     // Header with stats
                     VStack(spacing: 16) {
                         // Stats bar
                         HStack(spacing: 30) {
                             StatCard(
-                                value: "\(analysisManager.pendingWaypoints.count)",
+                                value: "0", // "\(analysisManager.pendingWaypoints.count)"
                                 label: "Total Locations",
                                 icon: "mappin.circle.fill",
                                 color: .blue
@@ -124,7 +131,7 @@ struct WaypointReviewView: View {
                                 color: .green
                             )
                             
-                            let totalPhotos = analysisManager.pendingWaypoints.reduce(0) { $0 + $1.photoCount }
+                            let totalPhotos = 0 // analysisManager.pendingWaypoints.reduce(0) { $0 + $1.photoCount }
                             StatCard(
                                 value: "\(totalPhotos)",
                                 label: "Total Photos",
@@ -271,6 +278,8 @@ struct WaypointReviewView: View {
                                 .cornerRadius(12)
                             }
                             
+                            // MVP: Analysis controls temporarily disabled
+                            /*
                             if !analysisManager.pendingWaypoints.isEmpty {
                                 Button(action: {
                                     analysisManager.startBackgroundAnalysis(forceRestart: true)
@@ -287,8 +296,11 @@ struct WaypointReviewView: View {
                                     .cornerRadius(12)
                                 }
                             }
+                            */
                         }
                         
+                        // MVP: Save controls temporarily disabled  
+                        /*
                         if !analysisManager.pendingWaypoints.isEmpty {
                             Button(action: saveSelected) {
                             HStack {
@@ -310,6 +322,7 @@ struct WaypointReviewView: View {
                             }
                             .disabled(isSyncing)
                         }
+                        */
                         
                         Button(action: {
                             dismiss()
@@ -335,12 +348,14 @@ struct WaypointReviewView: View {
                 }
             }
             .overlay(
-                // Sync progress overlay
+                // MVP: Sync progress overlay temporarily disabled
+                /*
                 Group {
                     if isSyncing, let syncProgress = analysisManager.syncProgress {
                         SyncProgressOverlay(progress: syncProgress)
                     }
                 }
+                */
             )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -358,6 +373,8 @@ struct WaypointReviewView: View {
                 }
             }
         }
+        // MVP: Photo selection sheet temporarily disabled
+        /*
         .sheet(isPresented: $showPhotoSelection) {
             PhotoSelectionView { selectedAssets in
                 if selectedAssets.isEmpty {
@@ -369,6 +386,7 @@ struct WaypointReviewView: View {
                 }
             }
         }
+        */
         .alert("Error", isPresented: .constant(syncError != nil)) {
             Button("OK") {
                 syncError = nil
@@ -379,8 +397,8 @@ struct WaypointReviewView: View {
             }
         }
         .onAppear {
-            // Auto-select all waypoints initially
-            selectedWaypoints = Set(analysisManager.pendingWaypoints.map { $0.id })
+            // MVP: Auto-select disabled since no waypoints
+            // selectedWaypoints = Set(analysisManager.pendingWaypoints.map { $0.id })
         }
     }
     
@@ -933,3 +951,4 @@ private struct SyncProgressOverlay: View {
         }
     }
 }
+*/
